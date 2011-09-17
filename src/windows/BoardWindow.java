@@ -8,6 +8,8 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 public class BoardWindow extends JFrame{
 	
+	private static final long serialVersionUID = 42;
+
 	public BoardWindow(){
 		
 		super("TESTE");

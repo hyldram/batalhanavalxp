@@ -10,7 +10,9 @@ import java.net.UnknownHostException;
 import connections.Server;
 
 public class ServerWindow  extends JFrame{
-	
+
+	private static final long serialVersionUID = 42;
+
 	public ServerWindow() throws UnknownHostException{
 		
 		super("Iniciando um Servidor");

@@ -7,7 +7,9 @@ import java.net.UnknownHostException;
 
 public class BeginWindow extends JFrame{
 
-		public BeginWindow(){
+	private static final long serialVersionUID = 42;
+
+	public BeginWindow(){
 			
 			// Determina nome Janela
 			super("Batalha Naval");

@@ -3,10 +3,11 @@ package windows;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
-import connections.Client;
 
 public class ClientWindow extends JFrame{
-	
+
+	private static final long serialVersionUID = 42;
+
 	public ClientWindow(){
 		super("Acessando um Servidor");
 		
