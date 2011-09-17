@@ -1,0 +1,85 @@
+package connections;
+
+import java.io.*;
+import java.net.*;
+
+
+public class Server {
+	
+	//public String ip;
+	//public String port;
+	
+	public boolean startServer(String port) throws IOException{
+
+		// Tag responsável por guardar o Status do Server
+		boolean serverStatus = false;
+		
+		// Tag responsável por guardar o Status do Endereço
+		boolean addressStatus = false;
+		
+		// Executa método para checar o IP e PORTA passados
+		addressStatus = checkAddress(port);
+		//addressStatus = checkAddress(ip, port);
+		
+		// Se o IP e PORTA existem Cria Socket. Senão exibe mensagem de erro
+		if (addressStatus == true){
+
+			// Cria Socket
+			ServerSocket socketServer = new ServerSocket(Integer.parseInt(port));
+			//ServerSocket socketServer = new ServerSocket();
+			
+			//InetSocketAddress serverAddress = new InetSocketAddress(ip, Integer.parseInt(port));
+			
+			//socketServer.bind(serverAddress);
+			
+			// Aceita conexões
+			Socket socketConnection = socketServer.accept();
+				
+//---------- TESTE -------------------------------------------------------------------
+			
+			// Cria objeto que lê informações do cliente
+			BufferedReader doCliente = new BufferedReader(new InputStreamReader(socketConnection.getInputStream()));
+					
+			// Envia informações para o cliente
+			DataOutputStream paraCliente = new DataOutputStream(socketConnection.getOutputStream());
+	
+			String fraseCliente = "";
+			String fraseMaiusculas = "";
+			
+			while(!fraseCliente.equals("FIM")) {
+						
+				// Lê dados do cliente
+				fraseCliente = doCliente.readLine();
+				if (fraseCliente.equals("FIM")){
+					socketConnection.close();
+				}else{
+				
+					fraseMaiusculas = fraseCliente.toUpperCase() + '\n';
+							
+					// Envia dados para o Cliente
+					paraCliente.writeBytes(fraseMaiusculas);
+				}	
+			}
+			
+//--------- TESTE ---------------------------------------------------------------------
+		}else{
+			System.out.println("ERRO");
+		}
+		return serverStatus;
+
+	}
+	
+	// Método que checa se a PORT passada é válida ou não.
+	public boolean checkAddress(String port){
+	//public boolean checkAddress(String ip, String port){	
+		boolean statusAddress = false;
+		
+		InetSocketAddress socketAddress = new InetSocketAddress(Integer.parseInt(port));
+		//InetSocketAddress socketAddress = new InetSocketAddress(ip, Integer.parseInt(port));
+		if (socketAddress.isUnresolved() == false){
+			statusAddress = true;
+		}
+		
+		return statusAddress;
+	}
+}
