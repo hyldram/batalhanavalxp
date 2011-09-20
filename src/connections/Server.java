@@ -1,18 +1,14 @@
-package connections;
+package src.connections;
 
 import java.io.*;
 import java.net.*;
 
-
 public class Server {
 	
-	//public String ip;
-	//public String port;
+	public String ip;
+	public String port;
 	
-	public boolean startServer(String port) throws IOException{
-
-		// Tag responsável por guardar o Status do Server
-		boolean serverStatus = false;
+	public void startServer(String port) throws IOException{
 		
 		// Tag responsável por guardar o Status do Endereço
 		boolean addressStatus = false;
@@ -31,6 +27,9 @@ public class Server {
 			//InetSocketAddress serverAddress = new InetSocketAddress(ip, Integer.parseInt(port));
 			
 			//socketServer.bind(serverAddress);
+			
+			// Server apenas para guardar a porta na Classe
+			setPort(port);
 			
 			// Aceita conexões
 			Socket socketConnection = socketServer.accept();
@@ -65,8 +64,6 @@ public class Server {
 		}else{
 			System.out.println("ERRO");
 		}
-		return serverStatus;
-
 	}
 	
 	// Método que checa se a PORT passada é válida ou não.
@@ -81,5 +78,21 @@ public class Server {
 		}
 		
 		return statusAddress;
+	}
+
+	public void setIp(String ip) {
+		this.ip = ip;
+	}
+
+	public void setPort(String port) {
+		this.port = port;
+	}
+
+	public String getIp() {
+		return ip;
+	}
+
+	public String getPort() {
+		return port;
 	}
 }

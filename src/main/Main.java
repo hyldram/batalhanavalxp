@@ -1,6 +1,6 @@
-package main;
+package src.main;
 
-import windows.*;
+import src.windows.*;
 
 public class Main {
 
@@ -13,8 +13,6 @@ public class Main {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 		new BeginWindow();
-		//new BoardWindow();
 	}
 }

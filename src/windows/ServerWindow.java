@@ -1,49 +1,56 @@
-package windows;
+package src.windows;
 
-import java.awt.*;
 import javax.swing.*;
+
+import src.connections.Server;
+import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
-import connections.Server;
+import java.net.*;
 
 public class ServerWindow  extends JFrame{
 
 	private static final long serialVersionUID = 42;
-
+	public Container swFrame;
+	public JLabel lbServerIp;
+	public JTextField tfServerIp;
+	public JLabel lbServerPort;
+	public JTextField tfServerPort;
+	public JButton btReturn;
+	public JButton btStartServer;
+	
 	public ServerWindow() throws UnknownHostException{
 		
+		// Determina nome Janela
 		super("Iniciando um Servidor");
 		
 		// Cria um Container
-		Container swFrame = this.getContentPane();
+		swFrame = this.getContentPane();
 		swFrame.setLayout(null);
 		
 		// Cria Label sobre Campo IP do Servidor
-		final JLabel lbServerIp = new JLabel("Digite o seu IP:");
+		lbServerIp = new JLabel("Digite o seu IP:");
 		lbServerIp.setBounds(10, 10, 100, 50);
 		
 		InetAddress serverIp = InetAddress.getLocalHost();
 		
 		// Cria TextField sobre Campo IP do Servidor. Que vai receber informações
 		// do usuário
-		final JTextField tfServerIp = new JTextField(serverIp.getHostAddress());
+		tfServerIp = new JTextField(serverIp.getHostAddress());
 		tfServerIp.setBounds(105, 10, 125, 50);
 		tfServerIp.setEnabled(false);
 		
 		// Cria Label sobre Campo Porta do Servidor
-		final JLabel lbServerPort = new JLabel("Digite a sua Porta:");
+		lbServerPort = new JLabel("Digite a sua Porta:");
 		lbServerPort.setBounds(10, 60, 120, 50);
 		
 		// Cria TextField sobre Campo Porta do Servidor. Que vai receber informações
 		// do usuário
-		final JTextField tfServerPort = new JTextField("");
+		tfServerPort = new JTextField("");
 		tfServerPort.setBounds(125, 60, 105, 50);
 		
 		// Cria Botão responsável por retornar a Tela Inicial
-		JButton btReturn = new JButton("Cancelar");
+		btReturn = new JButton("Cancelar");
 		btReturn.setBounds(10, 115, 80, 40);
 		btReturn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e)
@@ -54,7 +61,7 @@ public class ServerWindow  extends JFrame{
         });
 		
 		// Cria Botão responsável por enviar dados para Startar o Servidor
-		JButton btStartServer = new JButton("Iniciar");
+		btStartServer = new JButton("Iniciar");
 		btStartServer.setBounds(150, 115, 80, 40);
 		btStartServer.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
@@ -67,6 +74,7 @@ public class ServerWindow  extends JFrame{
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
+				new BoardWindow("Server");
 			}
 		});
 		
@@ -80,11 +88,12 @@ public class ServerWindow  extends JFrame{
 				
 		// Configura detalhes do Frame
 		// 1. Encerrar Applicação ao Fechar
-		// 2. Setar Frame como Visível
-		// 3. Setar as dimensões do Frame
+		// 2. Setar as dimensões do Frame
+		// 3. Setar Frame como Visível
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // 1
-		this.setVisible(true); // 2
-		this.setSize(240, 180); // 3
+		this.setSize(240, 180); // 2
+		this.setVisible(true); // 3
+		
 	}
 
 }
