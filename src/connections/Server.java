@@ -3,7 +3,7 @@ package src.connections;
 import java.io.*;
 import java.net.*;
 
-public class Server {
+public class Server{
 	
 	public String ip;
 	public String port;
@@ -33,34 +33,8 @@ public class Server {
 			
 			// Aceita conexões
 			Socket socketConnection = socketServer.accept();
-				
-//---------- TESTE -------------------------------------------------------------------
 			
-			// Cria objeto que lê informações do cliente
-			BufferedReader doCliente = new BufferedReader(new InputStreamReader(socketConnection.getInputStream()));
-					
-			// Envia informações para o cliente
-			DataOutputStream paraCliente = new DataOutputStream(socketConnection.getOutputStream());
-	
-			String fraseCliente = "";
-			String fraseMaiusculas = "";
-			
-			while(!fraseCliente.equals("FIM")) {
-						
-				// Lê dados do cliente
-				fraseCliente = doCliente.readLine();
-				if (fraseCliente.equals("FIM")){
-					socketConnection.close();
-				}else{
-				
-					fraseMaiusculas = fraseCliente.toUpperCase() + '\n';
-							
-					// Envia dados para o Cliente
-					paraCliente.writeBytes(fraseMaiusculas);
-				}	
-			}
-			
-//--------- TESTE ---------------------------------------------------------------------
+
 		}else{
 			System.out.println("ERRO");
 		}
