@@ -1,4 +1,5 @@
 Manifest-Version: 1.0
 Class-Path: .
-Main-Class: main.Main
+Main-Class: src.main.Main
 SplashScreen-Image: splashScreen.png
+

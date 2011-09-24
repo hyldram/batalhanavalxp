@@ -2,9 +2,7 @@ package src.windows;
 
 import java.awt.*;
 import javax.swing.*;
-
 import src.connections.Client;
-
 import java.awt.event.*;
 import java.io.IOException;
 import java.net.UnknownHostException;
@@ -19,6 +17,7 @@ public class ClientWindow extends JFrame{
 	public JTextField tfClientPort;
 	public JButton btReturn;
 	public JButton btAccessServer;
+
 	
 	public ClientWindow(){
 		
@@ -35,7 +34,8 @@ public class ClientWindow extends JFrame{
 		
 		// Cria TextField sobre Campo IP do Servidor a ser acessado. Que vai receber informações
 		// do usuário
-		tfClientIp = new JTextField("");
+		
+		tfClientIp = new JTextField();
 		tfClientIp.setBounds(105, 10, 125, 50);
 		
 		// Cria Label sobre Campo Porta do Servidor a ser acessado

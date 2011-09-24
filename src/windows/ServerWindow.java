@@ -1,7 +1,6 @@
 package src.windows;
 
 import javax.swing.*;
-
 import src.connections.Server;
 import java.awt.*;
 import java.awt.event.*;
@@ -46,7 +45,7 @@ public class ServerWindow  extends JFrame{
 		
 		// Cria TextField sobre Campo Porta do Servidor. Que vai receber informações
 		// do usuário
-		tfServerPort = new JTextField("");
+		tfServerPort = new JTextField();
 		tfServerPort.setBounds(125, 60, 105, 50);
 		
 		// Cria Botão responsável por retornar a Tela Inicial
