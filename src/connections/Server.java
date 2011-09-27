@@ -1,7 +1,9 @@
-package src.connections;
+package connections;
 
-import java.io.*;
-import java.net.*;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 public class Server{
 	

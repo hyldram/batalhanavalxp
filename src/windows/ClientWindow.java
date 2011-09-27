@@ -1,11 +1,17 @@
-package src.windows;
+package windows;
 
-import java.awt.*;
-import javax.swing.*;
-import src.connections.Client;
-import java.awt.event.*;
+import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.UnknownHostException;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+
+import connections.Client;
 
 public class ClientWindow extends JFrame{
 
@@ -78,7 +84,9 @@ public class ClientWindow extends JFrame{
 					e1.printStackTrace();
 				}
             	setVisible(false);
-                new BoardWindow("Client");
+                
+            	new BarcoWindow( "Client", 5 ).setVisible(true);;
+            	//new BoardWindow("Client");
             }
         });
 		

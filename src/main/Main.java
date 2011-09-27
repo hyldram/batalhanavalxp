@@ -1,6 +1,8 @@
-package src.main;
+package main;
 
-import src.windows.*;
+import windows.BarcoWindow;
+import windows.BeginWindow;
+import windows.BoardWindow;
 
 public class Main {
 
@@ -14,5 +16,6 @@ public class Main {
 			e.printStackTrace();
 		}
 		new BeginWindow();
+		//new BarcoWindow("Client", 5).setVisible(true);
 	}
 }

@@ -1,13 +1,20 @@
-package src.windows;
+package windows;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.swing.*;
-//import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
 
 public class BoardWindow extends JFrame{
 	
@@ -36,7 +43,7 @@ public class BoardWindow extends JFrame{
 	public JLabel player2 = new JLabel("Respostas ------>");
 	public JButton btShot;
 	
-	public BoardWindow(String type){
+	public BoardWindow(String[][] tabuleiro, String type){
 		
 		// Determina nome Janela
 		super("Batalha Naval XP");
@@ -83,9 +90,12 @@ public class BoardWindow extends JFrame{
         mountTableScore(tableScore);
         
         // Cria um frame para colocar a tabela e ajusta o seu tamanho
+        
+        // Tabela "Seu tabuleiro"
         pane = new JScrollPane(table);
         pane.getViewport().setPreferredSize(table.getPreferredSize());
         
+        // Tabela "Respostas"
         paneEnemy = new JScrollPane(tableEnemy);
         paneEnemy.getViewport().setPreferredSize(tableEnemy.getPreferredSize());
         
@@ -111,6 +121,7 @@ public class BoardWindow extends JFrame{
         				
         			// Solicita dados aos usuário
         			check = JOptionPane.showConfirmDialog(null, message, "Inserir coordenada do Tiro", JOptionPane.OK_OPTION);
+
         			if (check == 0){
         				if (validateShot(tf1r.getText(), tf1c.getText())){
         					// fazer envio de tiro
@@ -150,6 +161,30 @@ public class BoardWindow extends JFrame{
 		
 		// Monta o Jogo
 		//mountBoard(table);
+
+    	
+        //TESTEEES
+    	// Linha | Coluna
+    	/*table.setValueAt(tabuleiro[1][1], 1, 1); //5
+    	table.setValueAt(tabuleiro[2][1], 2, 1); //4
+    	table.setValueAt(tabuleiro[3][1], 3, 1); //3
+    	table.setValueAt(tabuleiro[4][2], 4, 2); //2
+    	table.setValueAt(tabuleiro[5][3], 5, 3); //1 */
+    	
+        // Percorre matriz do tabuleiro preenchida com valores dos barcos posicionados pelo usuario
+    	for( int linha = 1; linha < 10; linha++ )
+        {
+        	for( int coluna = 1; coluna < 10; coluna++ )
+        	{
+        		// Se houver algum barco na posicao corrente, exibe na celula da tabela
+        		if ( tabuleiro[linha][coluna] != null )
+        		{
+        			table.setValueAt(tabuleiro[linha][coluna], linha, coluna);
+        			//.setBackground( Color.YELLOW );
+        		}
+        	}		
+        }
+    	
 	}
 
 	// Seta valores para a Primeira Linha
@@ -169,7 +204,7 @@ public class BoardWindow extends JFrame{
 	}
 	
 	// Método que monta o Tabuleiro e valida os valores inseridos
-	public void mountBoard(JTable table){
+	/*public void mountBoard(JTable table){
 		
 		int check = 1;
 		int error = 0;
@@ -332,7 +367,8 @@ public class BoardWindow extends JFrame{
 		}
 		check = 1;
 	}
-	
+	*/
+
 	// Retorna a variável Type
 	public String getType() {
 		return type;
@@ -432,7 +468,8 @@ public class BoardWindow extends JFrame{
 		
 		boolean check = false;
 		
-		if (!hasZeros(row, column) && !hasLetters(row, column) && !hasNull(row, column)){
+		if (!hasZeros(row, column) && !hasLetters(row, column) && !hasNull(row, column) && (Integer.parseInt(row)<10)
+				&& (Integer.parseInt(row)>0) && (Integer.parseInt(column)<10) && (Integer.parseInt(column)>0)){
 			
 			check = true;
 		}

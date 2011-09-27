@@ -1,11 +1,18 @@
-package src.windows;
+package windows;
 
-import javax.swing.*;
-import src.connections.Server;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.net.*;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+
+import connections.Server;
 
 public class ServerWindow  extends JFrame{
 
@@ -73,7 +80,8 @@ public class ServerWindow  extends JFrame{
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				new BoardWindow("Server");
+				//new BoardWindow("Server");
+				new BarcoWindow("Server", 5).setVisible(true);;
 			}
 		});
 		
