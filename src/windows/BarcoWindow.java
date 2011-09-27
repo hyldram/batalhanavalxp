@@ -1,6 +1,9 @@
 package windows;
 
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.swing.JOptionPane;
 
 /*
@@ -240,10 +243,26 @@ public class BarcoWindow extends javax.swing.JFrame {
 
 private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
 // TODO add your handling code here:
-	
-    if( jTextField1.getText().isEmpty()|| jTextField2.getText().isEmpty() )
+
+	// Verifica se usuario nao digitou caracteres invalidos
+	if ( (!Pattern.matches( "[-]?\\d*[.]?\\d+", jTextField1.getText())) | (!Pattern.matches( "[-]?\\d*[.]?\\d+", jTextField2.getText())) )
+    {
+    	JOptionPane.showMessageDialog(null, "Você deve preencher campo linha e coluna com valores de 1 a 10" );
+    }
+	// Verifica se usuario digitou os valores para coluna e linha
+	else if( jTextField1.getText().isEmpty()|| jTextField2.getText().isEmpty() )
     {
         JOptionPane.showMessageDialog(null, "Você deve preencher campo linha e coluna com valores de 1 a 10" );
+    }
+    // Verifica se usuario nao digitou valores maiores que 10 para coluna e linha
+    else if ( (Integer.valueOf(jTextField1.getText()) > 10) || (Integer.valueOf(jTextField2.getText()) > 10) )
+    {
+    	JOptionPane.showMessageDialog(null, "Você deve preencher campo linha e coluna com valores de 1 a 10" );
+    }
+	// Verifica se usuario selecionou a posicao do barco
+    else if ( (!jRadioButton1.isSelected()) && (!jRadioButton2.isSelected()) )
+    {
+    	JOptionPane.showMessageDialog(null, "Você deve selecionar a posição do barco como vertical ou horizontal" );
     }
     else
     {
@@ -263,37 +282,90 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
         this.setVisible(false);
         
         
-        // Percorre todas posicoes do barco para gravar o seu 'ID' (tamanho) na matriz
+        int [] linha_invalida = new int[tamanho];
+        int [] coluna_invalida = new int[tamanho];
+        int posinv = 0;
+        
+        // Percorre todas posicoes do barco para verificar se alguma eh invalida
         for(int count=0; count<tamanho; count++)
         {
+        	int temp_coluna, temp_linha;
+        	
         	// Angulo eh vertical
             if( angulo == VERTICAL )
             {
-                tabuleiro[linha_ini+count][coluna_ini] = nome_barco;   
+            	temp_coluna = coluna_ini;
+            	temp_linha = linha_ini+count;
             }
             //Angulo eh horizontal
             else 
             {   
-            	tabuleiro[linha_ini][coluna_ini+count] = nome_barco;  
-            	
+            	temp_coluna = coluna_ini+count;
+            	temp_linha = linha_ini;
+            }
+            
+            // Se posicao for invalida guarda em array para informar usuario
+            if ( (tabuleiro[temp_linha][temp_coluna] > 0) || (temp_linha > 10) || (temp_coluna > 10) ){
+            	linha_invalida[posinv] = temp_linha;
+            	coluna_invalida[posinv] = temp_coluna;
+            	posinv++;
             }
         }
-        
-        // Se existir ainda barco para solicitar posicoes, instancia novamente a classe
-        if(tamanho != 1)
+
+        // Alguma posicao do barco nao eh valida
+        if ( posinv > 0)
         {
-            tamanho--;    
-            new BarcoWindow(type, tamanho).setVisible(true);
-        }
+        	String msg;
+        	
+        	msg = "A(s) posição(ões) ";
+        	
+        	for ( int count=0; count < posinv; count++ )
+        	{
+        		msg = msg + "[linha " + String.valueOf(linha_invalida[count]) + " x coluna " + String.valueOf(coluna_invalida[count]) + "] ";
+        	}
+        	
+        	msg = msg + "não são válidas ou já estão ocupadas por outro barco";
 
-        // Obtido dados de todos os barcos. prossegue para o tabuleiro
-        else{
-        	// Instancia objeto que ira exibir o tabuleiro do jogo
-        	new BoardWindow(tabuleiro, type);
-        	//System.out.println("terminou");
-
+        	// Exibe mensagem para usuario
+        	JOptionPane.showMessageDialog(null, msg );
+        	// Instancia objeto para solicitar dados novamente
+        	new BarcoWindow(type, tamanho).setVisible(true);
         }
         
+        // Todas posicoes do barco sao validas
+        else
+        {
+        	// Percorre todas posicoes do barco para gravar o seu 'ID' (tamanho) na matriz
+            for(int count=0; count<tamanho; count++)
+            {
+            	// Angulo eh vertical
+                if( angulo == VERTICAL )
+                {
+                    tabuleiro[linha_ini+count][coluna_ini] = tamanho;   
+                }
+                //Angulo eh horizontal
+                else 
+                {   
+                	tabuleiro[linha_ini][coluna_ini+count] = tamanho;  
+                	
+                }
+            }
+        	
+        	 // Se existir ainda barco para solicitar posicoes, instancia novamente a classe
+            if(tamanho != 1)
+            {
+                tamanho--;    
+                new BarcoWindow(type, tamanho).setVisible(true);
+            }
+            // Obtido dados de todos os barcos. prossegue para o tabuleiro
+            else{
+            	// Instancia objeto que ira exibir o tabuleiro do jogo
+            	new BoardWindow(tabuleiro, type);
+            	//System.out.println("terminou");
+
+            }
+        }
+
     }
 }
 
@@ -312,7 +384,7 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
     private javax.swing.JTextField jTextField2; // coluna
     
     // Cria matriz tabuleiro que armazenara o id do barco nas posicoes informadas pelo usuario
-    private static String[][] tabuleiro = new String[10][10];
+    private static int[][] tabuleiro = new int[10][10];
 
     // Cria um id para cada barco que eh igual ao seu tamanho
     private final int PORTA_AVIOES          = 5;
@@ -333,4 +405,19 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
     private int tipo;
     private String nome_barco;
     private int tamanho;
+    
+    // Método que verifica se tem alguma letra
+ 	public boolean hasLetters( String temp){
+ 		
+ 		boolean check = false;
+ 		
+ 		Pattern pattern = Pattern.compile("[1-10]");  
+        Matcher match = pattern.matcher(temp);
+           
+         if(!match.find()) {   
+ 			return true;
+ 		}
+ 		
+ 		return check;
+ 	}
 }

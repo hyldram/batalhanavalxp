@@ -43,7 +43,7 @@ public class BoardWindow extends JFrame{
 	public JLabel player2 = new JLabel("Respostas ------>");
 	public JButton btShot;
 	
-	public BoardWindow(String[][] tabuleiro, String type){
+	public BoardWindow(int[][] tabuleiro, String type){
 		
 		// Determina nome Janela
 		super("Batalha Naval XP");
@@ -177,7 +177,7 @@ public class BoardWindow extends JFrame{
         	for( int coluna = 1; coluna < 10; coluna++ )
         	{
         		// Se houver algum barco na posicao corrente, exibe na celula da tabela
-        		if ( tabuleiro[linha][coluna] != null )
+        		if ( tabuleiro[linha][coluna] > 0 )
         		{
         			table.setValueAt(tabuleiro[linha][coluna], linha, coluna);
         			//.setBackground( Color.YELLOW );
