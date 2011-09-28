@@ -1,12 +1,12 @@
-package windows;
+package src.windows;
 
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -15,41 +15,57 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import src.main.*;
+import src.connections.*;
 
 public class BoardWindow extends JFrame{
 	
 	private static final long serialVersionUID = 42;
-	public Container bwFrame; 
+	protected Container bwFrame; 
 	//public DefaultTableCellRenderer io_rd_renderer;
-	public JPanel panel;
-	public JTable table;
-	public JTable tableEnemy;
-	public JTable tableScore;
-	public JScrollPane pane;
-	public JScrollPane paneEnemy;
-	public JScrollPane paneScore;
-	public String type; // Determinar se é Cliente ou Servidor
-	public JTextField tf1c = new JTextField();  
-	public JTextField tf1r = new JTextField();  
-	public JTextField tf2c = new JTextField();  
-	public JTextField tf2r = new JTextField();  
-	public JTextField tf3c = new JTextField();  
-	public JTextField tf3r = new JTextField();  
-	public JTextField tf4c = new JTextField();  
-	public JTextField tf4r = new JTextField(); 
-	public Object[] message;
-	public Object[] errorMessage;
-	public JLabel player1 = new JLabel("Seu Tabuleiro  --->");
-	public JLabel player2 = new JLabel("Respostas ------>");
-	public JButton btShot;
+	protected JPanel panel;
+	protected JTable table;
+	protected JTable tableEnemy;
+	protected JTable tableScore;
+	protected JScrollPane pane;
+	protected JScrollPane paneEnemy;
+	protected JScrollPane paneScore;
+	protected String type; // Determinar se é Cliente ou Servidor
+	protected JTextField tf1c = new JTextField();  
+	protected JTextField tf1r = new JTextField();  
+	protected JTextField tf2c = new JTextField();  
+	protected JTextField tf2r = new JTextField();  
+	protected JTextField tf3c = new JTextField();  
+	protected JTextField tf3r = new JTextField();  
+	protected JTextField tf4c = new JTextField();  
+	protected JTextField tf4r = new JTextField(); 
+	protected Object[] message;
+	protected Object[] errorMessage;
+	protected JLabel player1 = new JLabel("Seu Tabuleiro  --->");
+	protected JLabel player2 = new JLabel("Respostas ------>");
+	protected JButton btShot;
+	protected Server socketServer;
+	protected Client socketClient;
 	
-	public BoardWindow(int[][] tabuleiro, String type){
+	
+	
+	public BoardWindow(int[][] tabuleiro, String gameType, Server server, Client client){
 		
 		// Determina nome Janela
 		super("Batalha Naval XP");
 		
 		// Cria um Container
 		bwFrame = this.getContentPane();
+		
+		// Guarda qual o modo que está rodando
+		setType(gameType);
+		
+		if (getType().equals("Server")){
+			socketServer = server;
+		}else{
+			socketClient = client;
+		}
+			
 		
 		// Cria um Painel
         panel = new JPanel();
@@ -105,33 +121,45 @@ public class BoardWindow extends JFrame{
         btShot = new JButton("Iniciar Disparo");
         btShot.setSize(50, 50);
         btShot.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e)
+        	public void actionPerformed(ActionEvent e)
             {
-            	int check = 1;
+        		Shot shot = new Shot();
+        		int check = 1;
             	int error = 0;
+            	
             	while (check != 0){
             		tf1c.setText(null);
         			tf1r.setText(null);
         			
         			message = new Object[] {  
-        					"Peça 1","Coluna", tf1c, "Linha", tf1r,};
+        					"Peça 1","Coluna", tf1c, "Linha", tf1r};
         		
         			errorMessage = new Object[] {"Verifique os coordenadas inseridos, pois existem coordenadas inválidos.\n" +
 													"Coordenadas válidas são de 1 a 10. Letras não são válidas\n"};
         				
         			// Solicita dados aos usuário
         			check = JOptionPane.showConfirmDialog(null, message, "Inserir coordenada do Tiro", JOptionPane.OK_OPTION);
-
         			if (check == 0){
         				if (validateShot(tf1r.getText(), tf1c.getText())){
-        					// fazer envio de tiro
-        					System.out.println("FECHOU TODAS");
+        					shot.createShot(tf1r.getText(), tf1c.getText());
+        					
+        					try {
+        						if (type.equals("Server")){
+        							socketServer.sendObject.writeObject(shot);
+        						}
+        						if (type.equals("Client")){
+        							socketClient.sendObject.writeObject(shot);
+        						}
+							} catch (IOException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
         				}else {
         					// Mensagem de erro
     						error = JOptionPane.showConfirmDialog(null, errorMessage, "Erro ao inserir Coordenadas", JOptionPane.CANCEL_OPTION);
     						check = 1;
         				}
-        			}
+        			}	
             	}
             }
         });
@@ -148,6 +176,13 @@ public class BoardWindow extends JFrame{
         // Adiciona o painel ao container
         bwFrame.add(panel);
 
+        System.out.println(type);
+        
+        // Inicia o jogo pelo Servidor
+        if (type.equals("Client")){
+        	btShot.setEnabled(false);
+        }
+        
         // Configura detalhes do Frame
         // 1. Encerrar Applicação ao Fechar
         // 2. Setar Frame como Visível
@@ -156,8 +191,8 @@ public class BoardWindow extends JFrame{
         this.setVisible(true); // 2
         this.setSize(1024, 460); // 3		
 
-		// Guardar na classe que tipo de conexão está sendo feita (Cliente ou Servidor)
-		setType(type.toUpperCase());
+    
+		
 		
 		// Monta o Jogo
 		//mountBoard(table);
@@ -468,8 +503,8 @@ public class BoardWindow extends JFrame{
 		
 		boolean check = false;
 		
-		if (!hasZeros(row, column) && !hasLetters(row, column) && !hasNull(row, column) && (Integer.parseInt(row)<10)
-				&& (Integer.parseInt(row)>0) && (Integer.parseInt(column)<10) && (Integer.parseInt(column)>0)){
+		if (!hasZeros(row, column) && !hasLetters(row, column) && !hasNull(row, column) && (Integer.parseInt(row)<=10)
+				&& (Integer.parseInt(row)>0) && (Integer.parseInt(column)<=10) && (Integer.parseInt(column)>0)){
 			
 			check = true;
 		}

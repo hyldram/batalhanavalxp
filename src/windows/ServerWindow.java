@@ -1,4 +1,4 @@
-package windows;
+package src.windows;
 
 import java.awt.Container;
 import java.awt.event.ActionEvent;
@@ -6,13 +6,11 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
-
-import connections.Server;
+import src.connections.Server;
 
 public class ServerWindow  extends JFrame{
 
@@ -72,16 +70,11 @@ public class ServerWindow  extends JFrame{
 		btStartServer.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
 			{
-				Server server = new Server();
-				try {
-					server.startServer(tfServerPort.getText());
-					//server.startServer(tfServerIp.getText(), tfServerPort.getText());
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				Server server = new Server(tfServerPort.getText());
+				setVisible(false);
+				server.start();
 				//new BoardWindow("Server");
-				new BarcoWindow("Server", 5).setVisible(true);;
+				new BarcoWindow("Server", 5, server, null).setVisible(true);;
 			}
 		});
 		

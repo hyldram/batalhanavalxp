@@ -1,8 +1,6 @@
-package main;
+package src.main;
 
-import windows.BarcoWindow;
-import windows.BeginWindow;
-import windows.BoardWindow;
+import src.windows.*;
 
 public class Main {
 

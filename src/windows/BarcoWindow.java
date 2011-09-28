@@ -1,11 +1,11 @@
-package windows;
+package src.windows;
 
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.swing.JOptionPane;
-
+import src.connections.Client;
+import src.connections.Server;
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -22,13 +22,15 @@ import javax.swing.JOptionPane;
  */
 public class BarcoWindow extends javax.swing.JFrame {
 
-
+	protected Server socketServer;
+	protected Client socketClient;
     
 	private static String type;
 	
 	/** Creates new form barcos */
-    public BarcoWindow( String type_temp, int tipo_barco ) 
-    {
+    
+	//public BarcoWindow(String type_temp, int tipo_barco){
+    public BarcoWindow(String type_temp, int tipo_barco, Server server, Client client){
     	type = type_temp;
     	
         if( tipo_barco == PORTA_AVIOES )              
@@ -56,9 +58,17 @@ public class BarcoWindow extends javax.swing.JFrame {
             nome_barco = "Submarino";
             tamanho = SUBMARINO;
         }
-            
+         
         
-        initComponents(nome_barco, tamanho, type ); 
+        if(type.equals("Server")){
+        	socketServer = server;
+        	initComponents(nome_barco, tamanho, type, server, null);
+        }else{
+        	socketClient = client;
+        	initComponents(nome_barco, tamanho, type, null, client);
+        }
+        
+        //initComponents(nome_barco, tamanho, type);
        
     }
 
@@ -69,8 +79,8 @@ public class BarcoWindow extends javax.swing.JFrame {
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">
-    private void initComponents( String nome_barco, int tamanho, String type ) {
-    	
+    private void initComponents(String nome_barco, int tamanho, String type, Server server, Client client) {
+    //private void initComponents(String nome_barco, int tamanho, String type) {	
         grupo_posicoes = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
@@ -84,6 +94,9 @@ public class BarcoWindow extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
 
+        // Referência criada pois a ação do botão não reconhecia a variavel estatica
+        final String gameType = type;
+        
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Dados do barco"));
@@ -181,7 +194,14 @@ public class BarcoWindow extends javax.swing.JFrame {
         jButton1.setText("Enviar");
          jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                
+            	if (gameType.equals("Server")){
+            		jButton1ActionPerformed(evt, socketServer, null);
+            	}else{
+            		jButton1ActionPerformed(evt, null, socketClient);
+            	}
+            	
+            	//jButton1ActionPerformed(evt);
             }
         });
 
@@ -241,7 +261,8 @@ public class BarcoWindow extends javax.swing.JFrame {
         pack();
     }// </editor-fold>
 
-private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
+    //private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
+private void jButton1ActionPerformed(java.awt.event.ActionEvent evt, Server server, Client client) {
 // TODO add your handling code here:
 
 	// Verifica se usuario nao digitou caracteres invalidos
@@ -328,8 +349,14 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
 
         	// Exibe mensagem para usuario
         	JOptionPane.showMessageDialog(null, msg );
-        	// Instancia objeto para solicitar dados novamente
-        	new BarcoWindow(type, tamanho).setVisible(true);
+        	
+        	if (type.equals("Server")){
+		    	// Instancia objeto para solicitar dados novamente
+		    	new BarcoWindow(type, tamanho, server, null).setVisible(true);
+        	}else{
+        		new BarcoWindow(type, tamanho, null, client).setVisible(true);
+        	}
+        	//new BarcoWindow(type, tamanho).setVisible(true);
         }
         
         // Todas posicoes do barco sao validas
@@ -354,13 +381,27 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
         	 // Se existir ainda barco para solicitar posicoes, instancia novamente a classe
             if(tamanho != 1)
             {
-                tamanho--;    
-                new BarcoWindow(type, tamanho).setVisible(true);
+                tamanho--;
+                
+                if (type.equals("Server")){
+                	new BarcoWindow(type, tamanho, server, null).setVisible(true);
+                }else{
+                	new BarcoWindow(type, tamanho, null, client).setVisible(true);
+                }
+            	
+                //new BarcoWindow(type, tamanho).setVisible(true);
             }
             // Obtido dados de todos os barcos. prossegue para o tabuleiro
             else{
             	// Instancia objeto que ira exibir o tabuleiro do jogo
-            	new BoardWindow(tabuleiro, type);
+            	
+            	if (type.equals("Server")){
+            		new BoardWindow(tabuleiro, type, server, null);
+                }else{
+                	new BoardWindow(tabuleiro, type, null, client);
+                }
+            	
+            	//new BoardWindow(tabuleiro, type);
             	//System.out.println("terminou");
 
             }

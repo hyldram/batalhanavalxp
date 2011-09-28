@@ -1,4 +1,4 @@
-package windows;
+package src.windows;
 
 import java.awt.Container;
 import java.awt.event.ActionEvent;
@@ -11,7 +11,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-import connections.Client;
+import src.connections.Client;
 
 public class ClientWindow extends JFrame{
 
@@ -70,22 +70,10 @@ public class ClientWindow extends JFrame{
 		btAccessServer.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e)
             {
-            	Client client = new Client();
-            	try {
-					client.connectServer(tfClientIp.getText(), tfClientPort.getText());
-				} catch (NumberFormatException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (UnknownHostException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-            	setVisible(false);
-                
-            	new BarcoWindow( "Client", 5 ).setVisible(true);;
+            	Client client = new Client(tfClientIp.getText(), tfClientPort.getText());
+             	setVisible(false);
+                client.start();
+            	new BarcoWindow("Client", 5, null, client).setVisible(true);;
             	//new BoardWindow("Client");
             }
         });

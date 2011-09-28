@@ -1,44 +1,56 @@
-package connections;
+package src.connections;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.io.*;
+import java.net.*;
+import src.main.*;
+import javax.swing.*;
 
-public class Server{
+public class Server extends Thread implements Runnable{
 	
-	public String ip;
-	public String port;
+	protected String ip;
+	protected String port;
+	protected ServerSocket socketServer;
+	protected Socket socketConnection;
+	public ObjectInputStream receiveObject;
+	public ObjectOutputStream sendObject;
+	protected Shot shot = new Shot();
 	
-	public void startServer(String port) throws IOException{
-		
-		// Tag responsável por guardar o Status do Endereço
-		boolean addressStatus = false;
-		
-		// Executa método para checar o IP e PORTA passados
-		addressStatus = checkAddress(port);
-		//addressStatus = checkAddress(ip, port);
-		
-		// Se o IP e PORTA existem Cria Socket. Senão exibe mensagem de erro
-		if (addressStatus == true){
+	public Server(String port){
+		try {
+			socketServer = new ServerSocket(Integer.parseInt(port));
+			socketConnection = socketServer.accept();
+			sendObject = new ObjectOutputStream(socketConnection.getOutputStream());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		setPort(port);
+	}
+	
+	public Shot getShot() {
+		return shot;
+	}
 
-			// Cria Socket
-			ServerSocket socketServer = new ServerSocket(Integer.parseInt(port));
-			//ServerSocket socketServer = new ServerSocket();
-			
-			//InetSocketAddress serverAddress = new InetSocketAddress(ip, Integer.parseInt(port));
-			
-			//socketServer.bind(serverAddress);
-			
-			// Server apenas para guardar a porta na Classe
-			setPort(port);
-			
-			// Aceita conexões
-			Socket socketConnection = socketServer.accept();
-			
-
-		}else{
-			System.out.println("ERRO");
+	public void run(){
+		try {
+			receiveObject = new ObjectInputStream(socketConnection.getInputStream());
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		while(true){
+			if (socketConnection.isConnected()){
+				try {
+					shot = (Shot) receiveObject.readObject();
+					System.out.println(shot.getColumn() + "--Server--" + shot.getRow());
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 	
@@ -56,6 +68,10 @@ public class Server{
 		return statusAddress;
 	}
 
+	public void receiveShot(Shot shot, JTable tableEnemy, JTable tableScore){
+		
+	}
+	
 	public void setIp(String ip) {
 		this.ip = ip;
 	}

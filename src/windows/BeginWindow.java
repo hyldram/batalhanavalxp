@@ -1,4 +1,4 @@
-package windows;
+package src.windows;
 
 import java.awt.Container;
 import java.awt.event.ActionEvent;
