@@ -129,7 +129,7 @@ public class Client extends Thread implements Runnable{
 						
 						int wipe;
 						
-						if (getCountPoints() == 0){
+						if (getShot().getCountPoints() == 0){
 							
 							// Cria Mensagem de Derrota
 		        			errorMessage = new Object[] {"Você GANHOU! Clique em Ok para voltar a Tela Inicial. GANHOU!\n\n"};
