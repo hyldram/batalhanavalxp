@@ -5,6 +5,8 @@ import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JButton;
@@ -24,8 +26,8 @@ public class BoardWindow extends JFrame{
 	protected Container bwFrame; 
 	//public DefaultTableCellRenderer io_rd_renderer;
 	protected JPanel panel;
-	protected JTable table;
-	protected JTable tableEnemy;
+	public JTable table;
+	public JTable tableEnemy;
 	protected JTable tableScore;
 	protected JScrollPane pane;
 	protected JScrollPane paneEnemy;
@@ -46,7 +48,8 @@ public class BoardWindow extends JFrame{
 	protected JButton btShot;
 	protected Server socketServer;
 	protected Client socketClient;
-	
+	public Board board;
+	public List<String> shots = new ArrayList<String>();
 	
 	
 	public BoardWindow(int[][] tabuleiro, String gameType, Server server, Client client){
@@ -59,13 +62,6 @@ public class BoardWindow extends JFrame{
 		
 		// Guarda qual o modo que está rodando
 		setType(gameType);
-		
-		if (getType().equals("Server")){
-			socketServer = server;
-		}else{
-			socketClient = client;
-		}
-			
 		
 		// Cria um Painel
         panel = new JPanel();
@@ -115,40 +111,65 @@ public class BoardWindow extends JFrame{
         paneEnemy = new JScrollPane(tableEnemy);
         paneEnemy.getViewport().setPreferredSize(tableEnemy.getPreferredSize());
         
+        // Tabela de Pontuação
         paneScore = new JScrollPane(tableScore);
         paneScore.getViewport().setPreferredSize(tableScore.getPreferredSize());
         
+        // Botão para Iniciar Disparo
         btShot = new JButton("Iniciar Disparo");
         btShot.setSize(50, 50);
         btShot.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e)
             {
+        		// Instancia Objeto a ser enviado por Socket
         		Shot shot = new Shot();
+        		
         		int check = 1;
             	int error = 0;
             	
+            	// Enquanto não foi apertado o botão certo e os dados não estiverem corretos, o aplicativo irá solicitar coordenadas
             	while (check != 0){
+            		
+            		// Limpa possíveis rastros nos JTexts
             		tf1c.setText(null);
         			tf1r.setText(null);
         			
+        			// Cria campos para Inserção
         			message = new Object[] {  
         					"Peça 1","Coluna", tf1c, "Linha", tf1r};
         		
-        			errorMessage = new Object[] {"Verifique os coordenadas inseridos, pois existem coordenadas inválidos.\n" +
-													"Coordenadas válidas são de 1 a 10. Letras não são válidas\n"};
+        			// Cria Mensagem de Erro
+        			errorMessage = new Object[] {"Verifique os coordenadas inseridos, pois existem coordenadas inválidas.\n" +
+													"Coordenadas válidas são de 1 a 10. Letras não são válidas\n" +
+        											"Coordenadas repetidas."};
         				
         			// Solicita dados aos usuário
         			check = JOptionPane.showConfirmDialog(null, message, "Inserir coordenada do Tiro", JOptionPane.OK_OPTION);
+        			
+        			// Se o botão pressionado for Sim
         			if (check == 0){
-        				if (validateShot(tf1r.getText(), tf1c.getText())){
-        					shot.createShot(tf1r.getText(), tf1c.getText());
+        				
+        				// Faz validação do tiro. Se for válidado envia tiro pelo Socket. Se não exibe mensagem de erro
+        				if (validateShot(tf1r.getText(), tf1c.getText(), shots)){
+        					
+        					// Cria Objeto a ser enviado
+        					shot.createShot(tf1r.getText(), tf1c.getText(), board);
         					
         					try {
+        						
+        						// Verifica se é Cliente ou Servidor. Desabilita o Botão para não enviar mais de um tiro e envia objeto por Socket
         						if (type.equals("Server")){
+        							btShot.setEnabled(false);
+        							socketServer.sendObject.flush();
         							socketServer.sendObject.writeObject(shot);
+        							socketServer.sendObject.flush();
         						}
+        						
         						if (type.equals("Client")){
+        							btShot.setEnabled(false);
+        							socketClient.sendObject.flush();
         							socketClient.sendObject.writeObject(shot);
+        							socketClient.sendObject.flush();
         						}
 							} catch (IOException e1) {
 								// TODO Auto-generated catch block
@@ -175,14 +196,30 @@ public class BoardWindow extends JFrame{
         
         // Adiciona o painel ao container
         bwFrame.add(panel);
-
-        System.out.println(type);
+        
+        // Instancia Objeto Board
+        board = new Board();
         
         // Inicia o jogo pelo Servidor
         if (type.equals("Client")){
         	btShot.setEnabled(false);
         }
         
+        // Adiciona as referências aos objetos que serão usados pelas Classes na thread
+        if (getType().equals("Server")){
+			socketServer = server;
+			socketServer.setServerTable(table);
+			socketServer.setServerScore(tableScore);
+			socketServer.setServerButton(btShot);
+			socketServer.setServerTableAnswer(tableEnemy);
+		}else{
+			socketClient = client;
+			socketClient.setClientTable(table);
+			socketClient.setClientScore(tableScore);
+			socketClient.setClientButton(btShot);
+			socketClient.setClientTableAnswer(tableEnemy);
+		}
+			
         // Configura detalhes do Frame
         // 1. Encerrar Applicação ao Fechar
         // 2. Setar Frame como Visível
@@ -499,10 +536,27 @@ public class BoardWindow extends JFrame{
 		table.setValueAt("Restam", 0, 3);
 	}
 	
-	public boolean validateShot(String row, String column){
+	// Método para validação do Tiro
+	public boolean validateShot(String row, String column, List<String> shots){
 		
 		boolean check = false;
 		
+		// Verifica se essas coordenadas já foram usadas. Se foram usadas avisa usuário
+		if (!shots.isEmpty()){
+			
+			for (int i = 0; i < shots.size(); i++) {
+				
+				if (shots.get(i).equals(column + row)){
+					
+					return false;
+				}
+			}		
+		}
+		
+		// Se coordenadas não foram usadas, guarda em um List
+		shots.add(column + row);
+		
+		// Verifica se as coordenadas não tem Zeros, ou Letras ou passam do Limite do Tabuleiro
 		if (!hasZeros(row, column) && !hasLetters(row, column) && !hasNull(row, column) && (Integer.parseInt(row)<=10)
 				&& (Integer.parseInt(row)>0) && (Integer.parseInt(column)<=10) && (Integer.parseInt(column)>0)){
 			
@@ -510,4 +564,6 @@ public class BoardWindow extends JFrame{
 		}
 		return check;
 	}
+	
+	
 }
