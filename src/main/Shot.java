@@ -15,13 +15,15 @@ public class Shot implements Serializable{
 	protected String column;
 	protected Board board;
 	
+	// Método que cria Tiro
 	public void createShot(String row, String column, Board board){
 		setColumn(column);
 		setRow(row);
 		setBoard(board);
 		setAnswer(false);
 	}
-	
+
+	// Método que cria Tiro Resposta
 	public void createShotAnswer(String row, String column, boolean answer, boolean hit, int countShot, int countHit, int countPoints){
 		setColumn(column);
 		setRow(row);
@@ -32,10 +34,7 @@ public class Shot implements Serializable{
 		setCountPoints(countPoints);
 	}
 	
-	public void createShotFinal(){
-		
-	}
-	
+	// Recebe o Tiro e faz as verificações se acertou o não
 	public boolean receiveShot(String row, String column, Board board){
 		
 		if (board.getEnemyTable().getValueAt(Integer.parseInt(row), Integer.parseInt(column)) != null){

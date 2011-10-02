@@ -108,6 +108,8 @@ public class Client extends Thread implements Runnable{
 							// Cria Mensagem de Derrota
 		        			errorMessage = new Object[] {"Você PERDEU! Clique em Ok para voltar a Tela Inicial. Novamente, você PERDEU!\n\n Há!"};
 							wipe = JOptionPane.showConfirmDialog(null, errorMessage, "VOCÊ PERDEU!", JOptionPane.CANCEL_OPTION);
+							interrupt();
+							disconnect();
 						}else{
 						
 							// Libera Botão para o Cliente poder Iniciar o Diparo
@@ -134,6 +136,8 @@ public class Client extends Thread implements Runnable{
 							// Cria Mensagem de Derrota
 		        			errorMessage = new Object[] {"Você GANHOU! Clique em Ok para voltar a Tela Inicial. GANHOU!\n\n"};
 							wipe = JOptionPane.showConfirmDialog(null, errorMessage, "FEITÔ! VOCÊ GANHOU!", JOptionPane.CANCEL_OPTION);
+							interrupt();
+							disconnect();
 						}
 						
 					}
@@ -147,6 +151,17 @@ public class Client extends Thread implements Runnable{
 		shot.getBoard().setEnemyScore(getClientScore());
 		shot.getBoard().setEnemyTable(getClientTable());
 		shot.getBoard().setEnemyButton(getClientButton());
+	}
+	
+	// Método para disconectar do Socket
+	public void disconnect(){
+		
+		try {
+			socketClient.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	

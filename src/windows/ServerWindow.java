@@ -23,6 +23,7 @@ public class ServerWindow  extends JFrame{
 	public JButton btReturn;
 	public JButton btStartServer;
 	
+	// Método construtor da tela criar servidor
 	public ServerWindow() throws UnknownHostException{
 		
 		// Determina nome Janela
@@ -73,7 +74,6 @@ public class ServerWindow  extends JFrame{
 				Server server = new Server(tfServerPort.getText());
 				setVisible(false);
 				server.start();
-				//new BoardWindow("Server");
 				new BarcoWindow("Server", 5, server, null).setVisible(true);;
 			}
 		});

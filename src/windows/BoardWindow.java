@@ -51,7 +51,7 @@ public class BoardWindow extends JFrame{
 	public Board board;
 	public List<String> shots = new ArrayList<String>();
 	
-	
+	// Método construtor da Tela que contem os Tabuleiros
 	public BoardWindow(int[][] tabuleiro, String gameType, Server server, Client client){
 		
 		// Determina nome Janela
@@ -136,7 +136,7 @@ public class BoardWindow extends JFrame{
         			
         			// Cria campos para Inserção
         			message = new Object[] {  
-        					"Peça 1","Coluna", tf1c, "Linha", tf1r};
+        					"Coordenadas do Tiro","Coluna", tf1c, "Linha", tf1r};
         		
         			// Cria Mensagem de Erro
         			errorMessage = new Object[] {"Verifique os coordenadas inseridos, pois existem coordenadas inválidas.\n" +

@@ -11,6 +11,7 @@ public class Board implements Serializable{
 	public JTable enemyTable;
 	public JButton enemyButton;
 	
+	// Pega referencia da Tabela Score do Inimigo
 	public JTable getEnemyScore() {
 		return enemyScore;
 	}
@@ -18,7 +19,8 @@ public class Board implements Serializable{
 	public void setEnemyScore(JTable enemyScore) {
 		this.enemyScore = enemyScore;
 	}
-
+	
+	// Pega referencia da Tabuleiro do Inimigo
 	public JTable getEnemyTable() {
 		return enemyTable;
 	}
@@ -27,6 +29,7 @@ public class Board implements Serializable{
 		this.enemyTable = enemyTable;
 	}
 
+	// Pega referencia do Botão Iniciar Disparo do Inimigo
 	public JButton getEnemyButton() {
 		return enemyButton;
 	}

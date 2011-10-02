@@ -15,6 +15,7 @@ public class BeginWindow extends JFrame{
 	public JButton btServer;
 	public JButton btClient;
 	
+	// Método construtor da tela inicial
 	public BeginWindow(){
 			
 			// Determina nome Janela

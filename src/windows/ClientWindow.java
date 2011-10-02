@@ -24,7 +24,7 @@ public class ClientWindow extends JFrame{
 	public JButton btReturn;
 	public JButton btAccessServer;
 
-	
+	// Método construtor da Tela acessar servidor
 	public ClientWindow(){
 		
 		// Determina nome Janela

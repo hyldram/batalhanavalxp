@@ -1,11 +1,9 @@
 package src.connections;
 
-
 import java.io.*;
 import java.net.*;
 import src.main.*;
 import javax.swing.*;
-
 
 public class Server extends Thread implements Runnable{
 	
@@ -28,6 +26,7 @@ public class Server extends Thread implements Runnable{
 	protected JButton serverButton;
 	protected Object[] errorMessage;
 	
+	// Método Construtor que cria Server Socket
 	public Server(String port){
 		try {
 			socketServer = new ServerSocket(Integer.parseInt(port));
@@ -38,10 +37,6 @@ public class Server extends Thread implements Runnable{
 			e.printStackTrace();
 		}
 		setPort(port);
-	}
-	
-	public Shot getShot() {
-		return shot;
 	}
 
 	// Threads que recebe Objeto e envia Objeto
@@ -115,6 +110,8 @@ public class Server extends Thread implements Runnable{
 							// Cria Mensagem de Derrota
 		        			errorMessage = new Object[] {"Você PERDEU! Clique em Ok para voltar a Tela Inicial. Novamente, você PERDEU!\n\n Há!"};
 							wipe = JOptionPane.showConfirmDialog(null, errorMessage, "VOCÊ PERDEU!", JOptionPane.CANCEL_OPTION);
+							interrupt();
+							disconnect();
 						}else{
 						
 							// Libera Botão para o Servidor poder Iniciar o Diparo
@@ -141,6 +138,8 @@ public class Server extends Thread implements Runnable{
 							// Cria Mensagem de Derrota
 		        			errorMessage = new Object[] {"Você GANHOU! Clique em Ok para voltar a Tela Inicial. FEITORIA!\n\n"};
 							wipe = JOptionPane.showConfirmDialog(null, errorMessage, "FEITÔ! VOCÊ GANHOU!", JOptionPane.CANCEL_OPTION);
+							interrupt();
+							disconnect();
 						}
 					}
 				}
@@ -162,12 +161,23 @@ public class Server extends Thread implements Runnable{
 	}
 
 	// Alimenta o Board do Cliente com as referencias do Servidor
-		public void configureClientBoard(Shot shot){
-			
-			getShot().getBoard().setEnemyScore(getServerScore());
-			getShot().getBoard().setEnemyTable(getServerTable());
-			getShot().getBoard().setEnemyButton(getServerButton());
+	public void configureClientBoard(Shot shot){
+		
+		getShot().getBoard().setEnemyScore(getServerScore());
+		getShot().getBoard().setEnemyTable(getServerTable());
+		getShot().getBoard().setEnemyButton(getServerButton());
+	}
+	
+	// Método para disconectar do Socket
+	public void disconnect(){
+		try {
+			socketConnection.close();
+			socketServer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+	}
 	
 	public void setIp(String ip) {
 		this.ip = ip;
@@ -269,4 +279,7 @@ public class Server extends Thread implements Runnable{
 		this.shot = shot;
 	}
 	
+	public Shot getShot() {
+		return shot;
+	}
 }

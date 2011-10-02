@@ -13,7 +13,8 @@ public class Main {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		// Carrega a Tela Inicial
 		new BeginWindow();
-		//new BarcoWindow("Client", 5).setVisible(true);
 	}
 }
