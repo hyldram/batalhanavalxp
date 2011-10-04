@@ -105,11 +105,13 @@ public class Client extends Thread implements Runnable{
 						int wipe = 0;
 						
 						if (getCountPoints() == 0){
-							// Cria Mensagem de Derrota
-		        			errorMessage = new Object[] {"Você PERDEU! Clique em Ok para voltar a Tela Inicial. Novamente, você PERDEU!\n\n Há!"};
-							wipe = JOptionPane.showConfirmDialog(null, errorMessage, "VOCÊ PERDEU!", JOptionPane.CANCEL_OPTION);
+							
 							interrupt();
 							disconnect();
+							
+							// Cria Mensagem de Derrota
+		        			errorMessage = new Object[] {"Você PERDEU! Clique em Ok para finalizar o jogo. PERDEU!\n\n Há!"};
+							wipe = JOptionPane.showConfirmDialog(null, errorMessage, "VOCÊ PERDEU!", JOptionPane.CANCEL_OPTION);
 						}else{
 						
 							// Libera Botão para o Cliente poder Iniciar o Diparo
@@ -133,11 +135,12 @@ public class Client extends Thread implements Runnable{
 						
 						if (getShot().getCountPoints() == 0){
 							
-							// Cria Mensagem de Derrota
-		        			errorMessage = new Object[] {"Você GANHOU! Clique em Ok para voltar a Tela Inicial. GANHOU!\n\n"};
-							wipe = JOptionPane.showConfirmDialog(null, errorMessage, "FEITÔ! VOCÊ GANHOU!", JOptionPane.CANCEL_OPTION);
 							interrupt();
 							disconnect();
+							
+							// Cria Mensagem de Derrota
+		        			errorMessage = new Object[] {"Você GANHOU! Clique em OK para finalizar o jogo. GANHOU!\n\n"};
+							wipe = JOptionPane.showConfirmDialog(null, errorMessage, "VOCÊ GANHOU!", JOptionPane.CANCEL_OPTION);
 						}
 						
 					}

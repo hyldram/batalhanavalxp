@@ -285,6 +285,18 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt, Server serv
     {
     	JOptionPane.showMessageDialog(null, "Você deve selecionar a posição do barco como vertical ou horizontal" );
     }
+	// Verifica se a posição definida ultrapassa ou não o limite do Tabuleiro
+    else if( (Integer.valueOf(jTextField1.getText()) + tamanho > 10))
+    {
+    	JOptionPane.showMessageDialog(null, "Verificar a posição inicial da Linha. Pois com as coordenadas atuais,\n" +
+    										"ultrapassa o limite do Tabuleiro" );
+    }
+	// Verifica se a posição definida ultrapassa ou não o limite do Tabuleiro
+	else if( (Integer.valueOf(jTextField2.getText()) + tamanho > 10))
+	{
+		JOptionPane.showMessageDialog(null, "Verificar a posição inicial da Coluna. Pois com as coordenadas atuais,\n" +
+											"ultrapassa o limite do Tabuleiro" );
+    }
     else
     {
     	// Armazena valores digitados pelo usuario para linha e coluna

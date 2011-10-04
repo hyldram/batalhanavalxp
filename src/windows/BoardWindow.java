@@ -251,8 +251,35 @@ public class BoardWindow extends JFrame{
         		// Se houver algum barco na posicao corrente, exibe na celula da tabela
         		if ( tabuleiro[linha][coluna] > 0 )
         		{
-        			table.setValueAt(tabuleiro[linha][coluna], linha, coluna);
-        			//.setBackground( Color.YELLOW );
+        			// Coloca as Iniciais dos Barcos(P, Q, T, D e S)
+        			switch (tabuleiro[linha][coluna]){
+	        			case 1:
+	        			{
+	        				table.setValueAt("S", linha, coluna);
+	        				break;
+	        			}
+	        			case 2:
+	        			{
+	        				table.setValueAt("D", linha, coluna);
+	        				break;
+	        			}
+	        			case 3:
+	        			{
+	        				table.setValueAt("T", linha, coluna);
+	        				break;
+	        			}
+	        			case 4:
+	        			{
+	        				table.setValueAt("Q", linha, coluna);
+	        				break;
+	        			}
+	        			case 5:
+	        			{
+	        				table.setValueAt("P", linha, coluna);
+	        				break;
+	        			}
+        			}
+        			
         		}
         	}		
         }

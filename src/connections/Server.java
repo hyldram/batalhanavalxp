@@ -107,11 +107,13 @@ public class Server extends Thread implements Runnable{
 						int wipe;
 						
 						if (getCountPoints() == 0){
+							
+							interrupt();
+							disconnect();
+							
 							// Cria Mensagem de Derrota
 		        			errorMessage = new Object[] {"Você PERDEU! Clique em Ok para voltar a Tela Inicial. Novamente, você PERDEU!\n\n Há!"};
 							wipe = JOptionPane.showConfirmDialog(null, errorMessage, "VOCÊ PERDEU!", JOptionPane.CANCEL_OPTION);
-							interrupt();
-							disconnect();
 						}else{
 						
 							// Libera Botão para o Servidor poder Iniciar o Diparo
@@ -135,11 +137,12 @@ public class Server extends Thread implements Runnable{
 						
 						if (getShot().getCountPoints() == 0){
 							
+							interrupt();
+							disconnect();
+							
 							// Cria Mensagem de Derrota
 		        			errorMessage = new Object[] {"Você GANHOU! Clique em Ok para voltar a Tela Inicial. FEITORIA!\n\n"};
 							wipe = JOptionPane.showConfirmDialog(null, errorMessage, "FEITÔ! VOCÊ GANHOU!", JOptionPane.CANCEL_OPTION);
-							interrupt();
-							disconnect();
 						}
 					}
 				}
