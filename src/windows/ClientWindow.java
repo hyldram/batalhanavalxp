@@ -74,7 +74,7 @@ public class ClientWindow extends JFrame{
             	Client client = new Client(tfClientIp.getText(), tfClientPort.getText());
              	setVisible(false);
                 client.start();
-            	new BarcoWindow("Client", 5, null, client).setVisible(true);;
+                new BoardWindow("Client", null, client);
             }
         });
 		

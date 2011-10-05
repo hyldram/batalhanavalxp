@@ -75,7 +75,7 @@ public class ServerWindow  extends JFrame{
 				Server server = new Server(tfServerPort.getText());
 				setVisible(false);
 				server.start();
-				new BarcoWindow("Server", 5, server, null).setVisible(true);;
+				new BoardWindow("Server", server, null);
 			}
 		});
 		

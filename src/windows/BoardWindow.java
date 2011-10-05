@@ -14,6 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -45,10 +46,12 @@ public class BoardWindow extends JFrame{
 	protected Client socketClient;	// guarda referencia do objeto client
 	public Board board;	// guarda referencias dos objetos
 	public List<String> shots = new ArrayList<String>(); // arraylist contendo as posições enviadas
+	public JRadioButton btHorizontal = new JRadioButton();
+	public JRadioButton btVertical = new JRadioButton();
 	
 	// Método construtor da Tela que contem os Tabuleiros
-	public BoardWindow(int[][] tabuleiro, String gameType, Server server, Client client){
-		
+	//public BoardWindow(int[][] tabuleiro, String gameType, Server server, Client client){
+	public BoardWindow(String gameType, Server server, Client client){
 		// Determina nome Janela
 		super("Batalha Naval XP");
 		
@@ -223,8 +226,28 @@ public class BoardWindow extends JFrame{
         this.setVisible(true); // 2
         this.setSize(1024, 460); // 3		
     	
+        btHorizontal.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e)
+            {
+        		if (btHorizontal.isSelected()){
+        			btVertical.setSelected(false);
+        		}
+            }
+        });
+        
+        btVertical.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e)
+            {
+        		if (btVertical.isSelected()){
+        			btHorizontal.setSelected(false);
+        		}
+            }
+        });
+        
+        mountBoard(table);
+        
         // Percorre matriz do tabuleiro preenchida com valores dos barcos posicionados pelo usuario
-    	for( int linha = 1; linha < 10; linha++ )
+    	/*for( int linha = 1; linha < 10; linha++ )
         {
         	for( int coluna = 1; coluna < 10; coluna++ )
         	{
@@ -262,7 +285,7 @@ public class BoardWindow extends JFrame{
         			
         		}
         	}		
-        }
+        }*/
     	
 	}
 
@@ -334,35 +357,45 @@ public class BoardWindow extends JFrame{
 	}
 	
 	// Verifica se as coordenadas são válidas
-	public boolean isCoordenatesOk(String row1, String column1, String row2, String column2){
+	public boolean isCoordenatesOk(String row1, String column1, int size, int type){
 		
 		boolean check = false;
 		
-		if (Integer.parseInt(row1) - 1 == Integer.parseInt(row2) || Integer.parseInt(row1) + 1 == Integer.parseInt(row2)) {
-			check = true;
+		if (type == 1){
+			if (Integer.parseInt(column1) + size - 1 <= 10) {
+				check = true;
+			}
+		}else{
+			if (Integer.parseInt(row1) + size - 1 <= 10) {
+				check = true;
+			}
 		}
-		
-		if (Integer.parseInt(column1) - 1 == Integer.parseInt(column2) || Integer.parseInt(column1) + 1 == Integer.parseInt(column2)) {
-			check = true;
-		}
-		
-		if (row1.equals(row2) && column1.equals(column2)){
-			check = false;
-		}
-		
+		System.out.println(check);
 		return check;
 	}
 	
 	// Verifica se nas coordenadas enviadas, não existe nenhuma peça
-	public boolean isPositionOk(JTable table, String row1, String column1, String row2, String column2){
+	public boolean isPositionOk(JTable table, String row1, String column1, int size, int type){
 	
 		boolean check = false;
 		
-		if (table.getValueAt(Integer.parseInt(row1), Integer.parseInt(column1)) == null &&
-				table.getValueAt(Integer.parseInt(row2), Integer.parseInt(column2)) == null){
-			check = true;
+		for (int i = 0; i <= size - 1; i++) {
+				
+			if (type == 1){
+				if (table.getValueAt(Integer.parseInt(row1), Integer.parseInt(column1) + i) == null){
+					check = true;
+				}else {
+					return false;
+				}
+			}else {
+				if (table.getValueAt(Integer.parseInt(row1) + i, Integer.parseInt(column1)) == null){
+					check = true;
+				}else {
+					return false;
+				}
+			}
 		}
-		
+		System.out.println(check);
 		return check;
 	}
 	
@@ -406,5 +439,308 @@ public class BoardWindow extends JFrame{
 		return check;
 	}
 	
+	 // Método que monta o Tabuleiro e valida os valores inseridos
+    public void mountBoard(JTable table){
+            
+            int check = 1;
+            int error = 0;
+            
+            // Mensagem de erro com os valores
+            errorMessage = new Object[]{"Verifique os coordenadas inseridos, pois existem coordenadas inválidos.\n" +
+                                        "Coordenadas válidas são de 1 a 10. Letras não são válidas\n" +
+                                        "Coordenadas devem ser valores seqüênciais (ou para Direita ou para Esquerda).\n" +
+                                        "Não é permitido usar Coordenadas repetidas. Selecionar Horizontal ou Vertical."};
+            
+            
+            // Insere 1 Submarino(1 peça)
+            btHorizontal.setSelected(true);
+            btVertical.setSelected(false);
+            message = new Object[] {  
+            "Posição Inicial","Coluna", tf1c, "Linha", tf1r, "Horizontal", btHorizontal, "Vertical", btVertical};
+    
+            while(check != 0){
+                    
+                    // Limpa possíveis rastros nos inputs 
+                    tf1c.setText(null);
+                    tf1r.setText(null);
+                    
+                    
+                    // Solicita dados aos usuário
+                    check = JOptionPane.showConfirmDialog(null, message, "Inserir 1 Submarino (1 peça)", JOptionPane.OK_OPTION);
+                    
+                    // Verifica qual é o opção escolhida
+                    if (check == 0){
+                            
+                    	int position = checkRadioButton(btHorizontal, btVertical);
+                    	
+                    		if ((position == 1) || (position == 2)){ 
+                    	
+	                            // Verifica se tem Zeros, Letras e "". SE NÃO TEM insere valores na tabela
+	                            // SE TEM exibe mensagem de erro e solicita novamente ao usuário
+	                            if (!hasZeros(tf1r.getText(), tf1c.getText())  &&  
+	                                    !hasLetters(tf1r.getText(), tf1c.getText()) && 
+	                                    !hasNull(tf1r.getText(), tf1c.getText()) && 
+	                                    isCoordenatesOk(tf1r.getText(), tf1c.getText(), 1, position) &&
+	                                    isPositionOk(table, tf1r.getText(), tf1c.getText(), 1, position)){
+	                                    
+	                                    // Insere na tabela
+	                            		for (int i = 0; i < 1; i++) {
+                            				if (position == 1){
+                            					table.setValueAt("S", Integer.parseInt(tf1r.getText()), Integer.parseInt(tf1c.getText()) + i);
+                            				}else {
+                            					table.setValueAt("S", Integer.parseInt(tf1r.getText()) + i, Integer.parseInt(tf1c.getText()));
+                            				}
+	                            		}
+	              
+	                            }else {
+	                                    
+	                                    // Mensagem de erro
+	                                    error = JOptionPane.showConfirmDialog(null, errorMessage, "Erro ao inserir Coordenadas", JOptionPane.CANCEL_OPTION);
+	                                    check = 1;
+	                            }
+                    		}else {
+                    			// Mensagem de erro
+                                error = JOptionPane.showConfirmDialog(null, errorMessage, "Erro ao inserir Coordenadas", JOptionPane.CANCEL_OPTION);
+                                check = 1;
+                    		}
+                    }
+            }
+            
+            check = 1;
+            
+            // Insere 1 navio 2 canhões
+            btHorizontal.setSelected(true);
+            btVertical.setSelected(false);
+            message = new Object[] {  
+            "Posição Inicial", "Coluna", tf1c, "Linha", tf1r, "Horizontal", btHorizontal, "Vertical", btVertical};
+            while(check != 0){
+                    
+                    // Limpa possíveis rastros nos inputs
+                    tf1c.setText(null);
+                    tf1r.setText(null);
+
+                    
+                    // Solicita dados aos usuário
+                    check = JOptionPane.showConfirmDialog(null, message, "Incluir 1 Navio de 2 Canhões (2 peças)", JOptionPane.OK_OPTION);
+                    
+                    // Verifica qual é o opção escolhida
+                    if (check == 0){
+                            
+                    	int position = checkRadioButton(btHorizontal, btVertical);
+                    	
+                		if ((position == 1) || (position == 2)){
+                    	
+                            // Verifica se tem Zeros, Letras e "". SE NÃO TEM insere valores na tabela
+                            // SE TEM exibe mensagem de erro e solicita novamente ao usuário
+                            if (!hasZeros(tf1r.getText(), tf1c.getText()) && 
+                                !hasLetters(tf1r.getText(), tf1c.getText()) && 
+                                !hasNull(tf1r.getText(), tf1c.getText()) && 
+                                isCoordenatesOk(tf1r.getText(), tf1c.getText(), 2, position) && 
+                                isPositionOk(table, tf1r.getText(), tf1c.getText(), 2, position)){
+                                    
+                                    
+                            	for (int i = 0; i < 2; i++) {
+                    				if (position == 1){
+                    					table.setValueAt("D", Integer.parseInt(tf1r.getText()), Integer.parseInt(tf1c.getText()) + i);
+                    				}else {
+                    					table.setValueAt("D", Integer.parseInt(tf1r.getText()) + i, Integer.parseInt(tf1c.getText()));
+                    				}
+                        		}
+                                    
+                            }else {
+                                    
+                                    // Mensagem de erro
+                                    error = JOptionPane.showConfirmDialog(null, errorMessage, "Erro ao inserir Coordenadas", JOptionPane.CANCEL_OPTION);
+                                    check = 1;
+                            }
+                        }else {
+                    			// Mensagem de erro
+                                error = JOptionPane.showConfirmDialog(null, errorMessage, "Erro ao inserir Coordenadas", JOptionPane.CANCEL_OPTION);
+                                check = 1;
+                		}
+                    }
+            }
+            
+            check = 1;
+            
+            // Insere 1 navio 3 canhões
+            btHorizontal.setSelected(true);
+            btVertical.setSelected(false);
+            message = new Object[] {  
+            "Posição Inicial", "Coluna", tf1c, "Linha", tf1r, "Horizontal", btHorizontal, "Vertical", btVertical};
+            while(check != 0){
+                    
+                    // Limpa possíveis rastros nos inputs
+                    tf1c.setText(null);
+                    tf1r.setText(null);
+
+                    
+                    // Solicita dados aos usuário
+                    check = JOptionPane.showConfirmDialog(null, message, "Incluir 1 Navio de 3 Canhões (3 peças)", JOptionPane.OK_OPTION);
+                    
+                    // Verifica qual é o opção escolhida
+                    if (check == 0){
+                            
+                    	int position = checkRadioButton(btHorizontal, btVertical);
+                    	
+                		if ((position == 1) || (position == 2)){
+                    	
+                            // Verifica se tem Zeros, Letras e "". SE NÃO TEM insere valores na tabela
+                            // SE TEM exibe mensagem de erro e solicita novamente ao usuário
+                            if (!hasZeros(tf1r.getText(), tf1c.getText()) && 
+                                !hasLetters(tf1r.getText(), tf1c.getText()) && 
+                                !hasNull(tf1r.getText(), tf1c.getText()) && 
+                                isCoordenatesOk(tf1r.getText(), tf1c.getText(), 3, position) && 
+                                isPositionOk(table, tf1r.getText(), tf1c.getText(), 3, position)){
+                                    
+                                    
+                            	for (int i = 0; i < 3; i++) {
+                    				if (position == 1){
+                    					table.setValueAt("T", Integer.parseInt(tf1r.getText()), Integer.parseInt(tf1c.getText()) + i);
+                    				}else {
+                    					table.setValueAt("T", Integer.parseInt(tf1r.getText()) + i, Integer.parseInt(tf1c.getText()));
+                    				}
+                        		}
+                                    
+                            }else {
+                                    
+                                    // Mensagem de erro
+                                    error = JOptionPane.showConfirmDialog(null, errorMessage, "Erro ao inserir Coordenadas", JOptionPane.CANCEL_OPTION);
+                                    check = 1;
+                            }
+                        }else {
+                    			// Mensagem de erro
+                                error = JOptionPane.showConfirmDialog(null, errorMessage, "Erro ao inserir Coordenadas", JOptionPane.CANCEL_OPTION);
+                                check = 1;
+                		}
+                    }
+            }
+            
+            check = 1;
+            
+            // Insere 1 navio 4 canhões
+            btHorizontal.setSelected(true);
+            btVertical.setSelected(false);
+            message = new Object[] {  
+            "Posição Inicial", "Coluna", tf1c, "Linha", tf1r, "Horizontal", btHorizontal, "Vertical", btVertical};
+            while(check != 0){
+                    
+                    // Limpa possíveis rastros nos inputs
+                    tf1c.setText(null);
+                    tf1r.setText(null);
+
+                    
+                    // Solicita dados aos usuário
+                    check = JOptionPane.showConfirmDialog(null, message, "Incluir 1 Navio de 4 Canhões (4 peças)", JOptionPane.OK_OPTION);
+                    
+                    // Verifica qual é o opção escolhida
+                    if (check == 0){
+                            
+                    	int position = checkRadioButton(btHorizontal, btVertical);
+                    	
+                		if ((position == 1) || (position == 2)){
+                    	
+                            // Verifica se tem Zeros, Letras e "". SE NÃO TEM insere valores na tabela
+                            // SE TEM exibe mensagem de erro e solicita novamente ao usuário
+                            if (!hasZeros(tf1r.getText(), tf1c.getText()) && 
+                                !hasLetters(tf1r.getText(), tf1c.getText()) && 
+                                !hasNull(tf1r.getText(), tf1c.getText()) && 
+                                isCoordenatesOk(tf1r.getText(), tf1c.getText(), 4, position) && 
+                                isPositionOk(table, tf1r.getText(), tf1c.getText(), 4, position)){
+                                    
+                                    
+                            	for (int i = 0; i < 4; i++) {
+                    				if (position == 1){
+                    					table.setValueAt("Q", Integer.parseInt(tf1r.getText()), Integer.parseInt(tf1c.getText()) + i);
+                    				}else {
+                    					table.setValueAt("Q", Integer.parseInt(tf1r.getText()) + i, Integer.parseInt(tf1c.getText()));
+                    				}
+                        		}
+                                    
+                            }else {
+                                    
+                                    // Mensagem de erro
+                                    error = JOptionPane.showConfirmDialog(null, errorMessage, "Erro ao inserir Coordenadas", JOptionPane.CANCEL_OPTION);
+                                    check = 1;
+                            }
+                        }else {
+                    			// Mensagem de erro
+                                error = JOptionPane.showConfirmDialog(null, errorMessage, "Erro ao inserir Coordenadas", JOptionPane.CANCEL_OPTION);
+                                check = 1;
+                		}
+                    }
+            }
+            
+            check = 1;
+            
+            // Insere 1 Porta Aviões
+            btHorizontal.setSelected(true);
+            btVertical.setSelected(false);
+            message = new Object[] {  
+            "Posição Inicial", "Coluna", tf1c, "Linha", tf1r, "Horizontal", btHorizontal, "Vertical", btVertical};
+            while(check != 0){
+                    
+                    // Limpa possíveis rastros nos inputs
+                    tf1c.setText(null);
+                    tf1r.setText(null);
+
+                    
+                    // Solicita dados aos usuário
+                    check = JOptionPane.showConfirmDialog(null, message, "Incluir 1 Porta Aviões (5 peças)", JOptionPane.OK_OPTION);
+                    
+                    // Verifica qual é o opção escolhida
+                    if (check == 0){
+                            
+                    	int position = checkRadioButton(btHorizontal, btVertical);
+                    	
+                		if ((position == 1) || (position == 2)){
+                    	
+                            // Verifica se tem Zeros, Letras e "". SE NÃO TEM insere valores na tabela
+                            // SE TEM exibe mensagem de erro e solicita novamente ao usuário
+                            if (!hasZeros(tf1r.getText(), tf1c.getText()) && 
+                                !hasLetters(tf1r.getText(), tf1c.getText()) && 
+                                !hasNull(tf1r.getText(), tf1c.getText()) && 
+                                isCoordenatesOk(tf1r.getText(), tf1c.getText(), 5, position) && 
+                                isPositionOk(table, tf1r.getText(), tf1c.getText(), 5, position)){
+                                    
+                                    
+                            	for (int i = 0; i < 5; i++) {
+                    				if (position == 1){
+                    					table.setValueAt("P", Integer.parseInt(tf1r.getText()), Integer.parseInt(tf1c.getText()) + i);
+                    				}else {
+                    					table.setValueAt("P", Integer.parseInt(tf1r.getText()) + i, Integer.parseInt(tf1c.getText()));
+                    				}
+                        		}
+                                    
+                            }else {
+                                    
+                                    // Mensagem de erro
+                                    error = JOptionPane.showConfirmDialog(null, errorMessage, "Erro ao inserir Coordenadas", JOptionPane.CANCEL_OPTION);
+                                    check = 1;
+                            }
+                        }else {
+                    			// Mensagem de erro
+                                error = JOptionPane.showConfirmDialog(null, errorMessage, "Erro ao inserir Coordenadas", JOptionPane.CANCEL_OPTION);
+                                check = 1;
+                		}
+                    }
+            }
+            
+    }
+    
+    public int checkRadioButton(JRadioButton radio1, JRadioButton radio2){
+    	
+    	int check = 1;
+    	
+    	if (radio1.isSelected()){
+    		check = 1;
+    	}
+    	
+    	if (radio2.isSelected()){
+    		check = 2;
+    	}
+    	
+    	return check;
+    }
 	
 }
