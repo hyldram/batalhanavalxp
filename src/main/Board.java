@@ -7,9 +7,9 @@ public class Board implements Serializable{
 
 	private static final long serialVersionUID = 42;
 	
-	public JTable enemyScore;
-	public JTable enemyTable;
-	public JButton enemyButton;
+	public JTable enemyScore; // referência da tabela do inimigo que contem a pontuação
+	public JTable enemyTable; // referencia da tabela resposta do inimigo
+	public JButton enemyButton; // referencia do botão iniciar disparo do inimigo
 	
 	// Pega referencia da Tabela Score do Inimigo
 	public JTable getEnemyScore() {

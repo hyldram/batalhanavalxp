@@ -23,33 +23,28 @@ import src.connections.*;
 public class BoardWindow extends JFrame{
 	
 	private static final long serialVersionUID = 42;
-	protected Container bwFrame; 
+	
+	protected Container bwFrame; // container que guarda objetos
 	//public DefaultTableCellRenderer io_rd_renderer;
-	protected JPanel panel;
-	public JTable table;
-	public JTable tableEnemy;
-	protected JTable tableScore;
-	protected JScrollPane pane;
-	protected JScrollPane paneEnemy;
-	protected JScrollPane paneScore;
+	protected JPanel panel;	// container que guarda pane
+	public JTable table;	// tabela que guarda posição das peças
+	public JTable tableEnemy;	// tabela que guarda os tiros dados
+	protected JTable tableScore;	// tabela que guarda pontuação
+	protected JScrollPane pane;		// container que guarda table das peças
+	protected JScrollPane paneEnemy;	// containerq que guarda table dos tiros enviados
+	protected JScrollPane paneScore;	// container que guarda table da pontuaçãp
 	protected String type; // Determinar se é Cliente ou Servidor
-	protected JTextField tf1c = new JTextField();  
-	protected JTextField tf1r = new JTextField();  
-	protected JTextField tf2c = new JTextField();  
-	protected JTextField tf2r = new JTextField();  
-	protected JTextField tf3c = new JTextField();  
-	protected JTextField tf3r = new JTextField();  
-	protected JTextField tf4c = new JTextField();  
-	protected JTextField tf4r = new JTextField(); 
-	protected Object[] message;
-	protected Object[] errorMessage;
-	protected JLabel player1 = new JLabel("Seu Tabuleiro  --->");
-	protected JLabel player2 = new JLabel("Respostas ------>");
-	protected JButton btShot;
-	protected Server socketServer;
-	protected Client socketClient;
-	public Board board;
-	public List<String> shots = new ArrayList<String>();
+	protected JTextField tf1c = new JTextField();  // textfield onde será inserido a coluna do tiro
+	protected JTextField tf1r = new JTextField();  // textfield onde será inserido a linha do tiro 
+	protected Object[] message;	// objeto que guarda mensagem
+	protected Object[] errorMessage;	// objeto que guarda mensagem de erro
+	protected JLabel player1 = new JLabel("Seu Tabuleiro  --->");	// label indicativo
+	protected JLabel player2 = new JLabel("Respostas ------>");	// label indicativo
+	protected JButton btShot;	// botão iniciar disparo (chama método)
+	protected Server socketServer; // guarda referencia do objeto server
+	protected Client socketClient;	// guarda referencia do objeto client
+	public Board board;	// guarda referencias dos objetos
+	public List<String> shots = new ArrayList<String>(); // arraylist contendo as posições enviadas
 	
 	// Método construtor da Tela que contem os Tabuleiros
 	public BoardWindow(int[][] tabuleiro, String gameType, Server server, Client client){
@@ -227,21 +222,6 @@ public class BoardWindow extends JFrame{
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // 1
         this.setVisible(true); // 2
         this.setSize(1024, 460); // 3		
-
-    
-		
-		
-		// Monta o Jogo
-		//mountBoard(table);
-
-    	
-        //TESTEEES
-    	// Linha | Coluna
-    	/*table.setValueAt(tabuleiro[1][1], 1, 1); //5
-    	table.setValueAt(tabuleiro[2][1], 2, 1); //4
-    	table.setValueAt(tabuleiro[3][1], 3, 1); //3
-    	table.setValueAt(tabuleiro[4][2], 4, 2); //2
-    	table.setValueAt(tabuleiro[5][3], 5, 3); //1 */
     	
         // Percorre matriz do tabuleiro preenchida com valores dos barcos posicionados pelo usuario
     	for( int linha = 1; linha < 10; linha++ )
@@ -302,172 +282,6 @@ public class BoardWindow extends JFrame{
 		}
 	}
 	
-	// Método que monta o Tabuleiro e valida os valores inseridos
-	/*public void mountBoard(JTable table){
-		
-		int check = 1;
-		int error = 0;
-		
-		// Mensagem de erro com os valores
-		errorMessage = new Object[]{"Verifique os coordenadas inseridos, pois existem coordenadas inválidos.\n" +
-									"Coordenadas válidas são de 1 a 10. Letras não são válidas\n" +
-									"Coordenadas devem ser valores seqüênciais (ou para Direita ou para Esquerda).\n" +
-									"Não é permitido usar Coordenadas repetidas."};
-		
-		
-		// Insere 2 peças de 2 posições
-		message = new Object[] {  
-		"Peça 1","Coluna", tf1c, "Linha", tf1r,"Peça 2", "Coluna", tf2c, "Linha", tf2r};
-		for (int i = 0; i <= 1; i++) {  
-			while(check != 0){
-				
-				// Limpa possíveis rastros nos inputs 
-				tf1c.setText(null);
-				tf1r.setText(null);
-				tf2c.setText(null);
-				tf2r.setText(null);
-				
-				// Solicita dados aos usuário
-				check = JOptionPane.showConfirmDialog(null, message, "Inserir peça de 2 posições", JOptionPane.OK_OPTION);
-				
-				// Verifica qual é o opção escolhida
-				if (check == 0){
-					
-					// Verifica se tem Zeros, Letras e "". SE NÃO TEM insere valores na tabela
-					// SE TEM exibe mensagem de erro e solicita novamente ao usuário
-					if (!hasZeros(tf1r.getText(), tf1c.getText()) && !hasZeros(tf2r.getText(), tf2c.getText()) &&  
-						!hasLetters(tf1r.getText(), tf1c.getText()) && !hasLetters(tf2r.getText(), tf2c.getText()) &&
-						!hasNull(tf1r.getText(), tf1c.getText()) && !hasNull(tf2r.getText(), tf2c.getText()) &&
-						isCoordenatesOk(tf1r.getText(), tf1c.getText(), tf2r.getText(), tf2c.getText()) &&
-						isPositionOk(table, tf1r.getText(), tf1c.getText(), tf2r.getText(), tf2c.getText())){
-						
-						// Verificar se as posições a serem inseridas estão livres
-						
-						// Insere na tabela
-						table.setValueAt("<>", Integer.parseInt(tf1r.getText()), Integer.parseInt(tf1c.getText()));
-						table.setValueAt("<>", Integer.parseInt(tf2r.getText()), Integer.parseInt(tf2c.getText()));
-					}else {
-						
-						// Mensagem de erro
-						error = JOptionPane.showConfirmDialog(null, errorMessage, "Erro ao inserir Coordenadas", JOptionPane.CANCEL_OPTION);
-						check = 1;
-					}
-				}
-			}
-			check = 1;
-		}
-		
-		// Insere 2 peças de 3 posições
-		message = new Object[] {  
-		"Peça 1", "Coluna", tf1c, "Linha", tf1r, "Peça 2", "Coluna", tf2c, "Linha", tf2r, 
-		"Peça 3", "Coluna", tf3c, "Linha", tf3r};
-		
-		for (int i = 0; i <= 1; i++) {  
-			while(check != 0){
-				
-				// Limpa possíveis rastros nos inputs
-				tf1c.setText(null);
-				tf1r.setText(null);
-				tf2c.setText(null);
-				tf2r.setText(null);
-				tf3c.setText(null);
-				tf3r.setText(null);
-				
-				// Solicita dados aos usuário
-				check = JOptionPane.showConfirmDialog(null, message, "Incluir peça de 3 posições", JOptionPane.OK_OPTION);
-				
-				// Verifica qual é o opção escolhida
-				if (check == 0){
-					
-					// Verifica se tem Zeros, Letras e "". SE NÃO TEM insere valores na tabela
-					// SE TEM exibe mensagem de erro e solicita novamente ao usuário
-					if (!hasZeros(tf1r.getText(), tf1c.getText()) && !hasZeros(tf2r.getText(), tf2c.getText()) &&
-							!hasZeros(tf3r.getText(), tf3c.getText()) &&
-						!hasLetters(tf1r.getText(), tf1c.getText()) && !hasLetters(tf2r.getText(), tf2c.getText()) &&
-							!hasLetters(tf3r.getText(), tf3c.getText()) &&
-						!hasNull(tf1r.getText(), tf1c.getText()) && !hasNull(tf2r.getText(), tf2c.getText()) &&
-							!hasNull(tf3r.getText(), tf3c.getText()) && 
-						isCoordenatesOk(tf1r.getText(), tf1c.getText(), tf2r.getText(), tf2c.getText()) && 
-							isCoordenatesOk(tf2r.getText(), tf2c.getText(), tf3r.getText(), tf3c.getText()) &&
-						isPositionOk(table, tf1r.getText(), tf1c.getText(), tf2r.getText(), tf2c.getText()) &&
-							isPositionOk(table, tf1r.getText(), tf1c.getText(), tf3r.getText(), tf3c.getText()) &&
-							isPositionOk(table, tf2r.getText(), tf2c.getText(), tf3r.getText(), tf3c.getText())){
-						
-						
-						// Insere na tabela
-						table.setValueAt("<>", Integer.parseInt(tf1r.getText()), Integer.parseInt(tf1c.getText()));
-						table.setValueAt("<>", Integer.parseInt(tf2r.getText()), Integer.parseInt(tf2c.getText()));
-						table.setValueAt("<>", Integer.parseInt(tf3r.getText()), Integer.parseInt(tf3c.getText()));
-					}else {
-						
-						// Mensagem de erro
-						error = JOptionPane.showConfirmDialog(null, errorMessage, "Erro ao inserir Coordenadas", JOptionPane.CANCEL_OPTION);
-						check = 1;
-					}
-				}
-			}
-			check = 1;
-		}
-		
-		// Insere 1 peças de 3 posições
-		message = new Object[] {  
-		"Peça 1", "Coluna", tf1c, "Linha", tf1r, "Peça 2", "Coluna", tf2c, "Linha", tf2r, 
-		"Peça 3", "Coluna", tf3c, "Linha", tf3r, "Peça 4", "Coluna", tf4c, "Linha", tf4r};
-		  
-		while(check != 0){
-			
-			// Limpa possíveis rastros nos inputs
-			tf1c.setText(null);
-			tf1r.setText(null);
-			tf2c.setText(null);
-			tf2r.setText(null);
-			tf3c.setText(null);
-			tf3r.setText(null);
-			tf4c.setText(null);
-			tf4r.setText(null);
-			
-			// Solicita dados aos usuário
-			check = JOptionPane.showConfirmDialog(null, message, "Incluir peça de 4 posições", JOptionPane.OK_OPTION);
-
-			// Verifica qual é o opção escolhida
-			if (check == 0){
-				
-				// Verifica se tem Zeros, Letras e "". SE NÃO TEM insere valores na tabela
-				// SE TEM exibe mensagem de erro e solicita novamente ao usuário
-				if (!hasZeros(tf1r.getText(), tf1c.getText()) && !hasZeros(tf2r.getText(), tf2c.getText()) &&
-						!hasZeros(tf3r.getText(), tf3c.getText()) && !hasZeros(tf4r.getText(), tf4c.getText()) &&
-					!hasLetters(tf1r.getText(), tf1c.getText()) && !hasLetters(tf2r.getText(), tf2c.getText()) &&
-						!hasLetters(tf3r.getText(), tf3c.getText()) && !hasZeros(tf4r.getText(), tf4c.getText()) &&
-					!hasNull(tf1r.getText(), tf1c.getText()) && !hasNull(tf2r.getText(), tf2c.getText()) &&
-						!hasNull(tf3r.getText(), tf3c.getText()) && !hasZeros(tf4r.getText(), tf4c.getText()) &&
-					isCoordenatesOk(tf1r.getText(), tf1c.getText(), tf2r.getText(), tf2c.getText()) && 
-						isCoordenatesOk(tf2r.getText(), tf2c.getText(), tf3r.getText(), tf3c.getText()) &&
-						isCoordenatesOk(tf3r.getText(), tf3c.getText(), tf4r.getText(), tf4c.getText()) &&
-					isPositionOk(table, tf1r.getText(), tf1c.getText(), tf2r.getText(), tf2c.getText()) &&
-						isPositionOk(table, tf1r.getText(), tf1c.getText(), tf3r.getText(), tf3c.getText()) &&
-						isPositionOk(table, tf1r.getText(), tf1c.getText(), tf4r.getText(), tf4c.getText()) &&
-						isPositionOk(table, tf2r.getText(), tf2c.getText(), tf3r.getText(), tf3c.getText()) &&
-						isPositionOk(table, tf2r.getText(), tf2c.getText(), tf4r.getText(), tf4c.getText()) &&
-						isPositionOk(table, tf3r.getText(), tf3c.getText(), tf4r.getText(), tf4c.getText())){
-					
-					
-					// Insere na tabela
-					table.setValueAt("<>", Integer.parseInt(tf1r.getText()), Integer.parseInt(tf1c.getText()));
-					table.setValueAt("<>", Integer.parseInt(tf2r.getText()), Integer.parseInt(tf2c.getText()));
-					table.setValueAt("<>", Integer.parseInt(tf3r.getText()), Integer.parseInt(tf3c.getText()));
-					table.setValueAt("<>", Integer.parseInt(tf4r.getText()), Integer.parseInt(tf4c.getText()));
-				}else {
-					
-					// Mensagem de erro
-					error = JOptionPane.showConfirmDialog(null, errorMessage, "Erro ao inserir Coordenadas", JOptionPane.CANCEL_OPTION);
-					check = 1;
-				}
-			}
-		}
-		check = 1;
-	}
-	*/
-
 	// Retorna a variável Type
 	public String getType() {
 		return type;

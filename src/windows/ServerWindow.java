@@ -15,13 +15,14 @@ import src.connections.Server;
 public class ServerWindow  extends JFrame{
 
 	private static final long serialVersionUID = 42;
-	public Container swFrame;
-	public JLabel lbServerIp;
-	public JTextField tfServerIp;
-	public JLabel lbServerPort;
-	public JTextField tfServerPort;
-	public JButton btReturn;
-	public JButton btStartServer;
+	
+	public Container swFrame; // container que guarda os objetos
+	public JLabel lbServerIp;	// label da ip do server
+	public JTextField tfServerIp; // textfield do server, contem o ip do server
+	public JLabel lbServerPort;	// label da porta do server
+	public JTextField tfServerPort;	// textfield para inserir a porta do server
+	public JButton btReturn;	// botão para retornar a tela inicial
+	public JButton btStartServer;	// botão para criar o server com os dados passados(chama método)
 	
 	// Método construtor da tela criar servidor
 	public ServerWindow() throws UnknownHostException{

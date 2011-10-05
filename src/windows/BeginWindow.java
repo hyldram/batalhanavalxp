@@ -4,16 +4,16 @@ import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.UnknownHostException;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
 public class BeginWindow extends JFrame{
 
 	private static final long serialVersionUID = 42;
-	public Container bwFrame;
-	public JButton btServer;
-	public JButton btClient;
+	
+	public Container bwFrame; // container que guarda os objetos swing
+	public JButton btServer; // botão que redireciona para tela de criar server
+	public JButton btClient;	// botão que redireciona para tela de acessar server
 	
 	// Método construtor da tela inicial
 	public BeginWindow(){

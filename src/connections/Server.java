@@ -7,24 +7,23 @@ import javax.swing.*;
 
 public class Server extends Thread implements Runnable{
 	
-	protected String ip;
-	protected String port;
-	public ServerSocket socketServer;
-	public Socket socketConnection;
-	public ObjectInputStream receiveObject;
-	public ObjectOutputStream sendObject;
-	protected Shot shot = new Shot();
-	protected Shot shotAnswer;
-	protected boolean hitAnswer;
-	protected int countShot;
-	protected int countHit;
-	protected int countPoints = 15;
-	protected int[][] serverBoard;
-	protected JTable serverTable;
-	protected JTable serverTableAnswer;
-	protected JTable serverScore;
-	protected JButton serverButton;
-	protected Object[] errorMessage;
+	protected String ip;	// guarda ip
+	protected String port;	// guarda porta
+	public ServerSocket socketServer;	// objeto que criar o server do socket
+	public Socket socketConnection;	// objeto que cria o socket
+	public ObjectInputStream receiveObject;	// objeto que recebe objeto
+	public ObjectOutputStream sendObject;	// objeto que envia objeto
+	protected Shot shot = new Shot();	// objeto tiro
+	protected Shot shotAnswer;	// objeto tiro resposta
+	protected boolean hitAnswer;	// tag que guarda se é tiro resposta ou não
+	protected int countShot;	// contador de tiro dados
+	protected int countHit;	// contador de tiros que acertaram
+	protected int countPoints = 15;	// contador dos tiros totais
+	protected JTable serverTable; // guarda referencia da tabela que contem os barcos do server
+	protected JTable serverTableAnswer;	//  guarda referencia da tabela que contem os tiros enviados pelo server
+	protected JTable serverScore;	//  guarda referencia da tabela que contem a pontuação do server
+	protected JButton serverButton;	//  guarda referencia do botão iniciar disparo do server 
+	protected Object[] errorMessage; // objeto que guarda mensagem de erro
 	
 	// Método Construtor que cria Server Socket
 	public Server(String port){
@@ -196,14 +195,6 @@ public class Server extends Thread implements Runnable{
 
 	public String getPort() {
 		return port;
-	}
-
-	public int[][] getServerBoard() {
-		return serverBoard;
-	}
-
-	public void setServerBoard(int[][] serverBoard) {
-		this.serverBoard = serverBoard;
 	}
 
 	public JTable getServerTable() {

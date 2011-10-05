@@ -16,13 +16,14 @@ import src.connections.Client;
 public class ClientWindow extends JFrame{
 
 	private static final long serialVersionUID = 42;
-	public Container cwFrame;
-	public JLabel lbClientIp;
-	public JTextField tfClientIp;
-	public JLabel lbClientPort;
-	public JTextField tfClientPort;
-	public JButton btReturn;
-	public JButton btAccessServer;
+	
+	public Container cwFrame; // container que guarda os objetos
+	public JLabel lbClientIp;	// label do ip do server a ser acessado
+	public JTextField tfClientIp;	// textfield para inserir ip do server
+	public JLabel lbClientPort;	// label da porta do server a ser acessado
+	public JTextField tfClientPort;	// textfield para inserir porta do server
+	public JButton btReturn;	// botão para retornar a tela inicial
+	public JButton btAccessServer;	// botão para acessar o server com os dados passados(chama método)
 
 	// Método construtor da Tela acessar servidor
 	public ClientWindow(){
@@ -74,7 +75,6 @@ public class ClientWindow extends JFrame{
              	setVisible(false);
                 client.start();
             	new BarcoWindow("Client", 5, null, client).setVisible(true);;
-            	//new BoardWindow("Client");
             }
         });
 		

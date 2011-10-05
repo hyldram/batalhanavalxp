@@ -22,10 +22,10 @@ import src.connections.Server;
  */
 public class BarcoWindow extends javax.swing.JFrame {
 
-	protected Server socketServer;
-	protected Client socketClient;
+	protected Server socketServer; // guarda referencia ao Server 
+	protected Client socketClient; // guarda referencia ao Client
     
-	private static String type;
+	private static String type;	// guarda o tipo, se é client ou server
 	
 	/** Creates new form barcos */
     
@@ -401,7 +401,6 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt, Server serv
                 	new BarcoWindow(type, tamanho, null, client).setVisible(true);
                 }
             	
-                //new BarcoWindow(type, tamanho).setVisible(true);
             }
             // Obtido dados de todos os barcos. prossegue para o tabuleiro
             else{
@@ -412,9 +411,6 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt, Server serv
                 }else{
                 	new BoardWindow(tabuleiro, type, null, client);
                 }
-            	
-            	//new BoardWindow(tabuleiro, type);
-            	//System.out.println("terminou");
 
             }
         }

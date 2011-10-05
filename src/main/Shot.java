@@ -6,14 +6,14 @@ public class Shot implements Serializable{
 	
 	private static final long serialVersionUID = 42;
 	
-	protected boolean answer;
-	protected boolean hit;
-	protected int countShot;
-	protected int countHit;
-	protected int countPoints;
-	protected String row;
-	protected String column;
-	protected Board board;
+	protected boolean answer;	// tag que diz se é tiro resposta ou não
+	protected boolean hit;	// tag que diz se acertou ou não
+	protected int countShot; // contador da quantidade de tiros
+	protected int countHit; // contador da quantidade de acertos
+	protected int countPoints; // contador de pontos
+	protected String row;	// linha
+	protected String column;	// coluna
+	protected Board board;	// objeto da classe Board
 	
 	// Método que cria Tiro
 	public void createShot(String row, String column, Board board){

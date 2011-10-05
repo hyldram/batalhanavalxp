@@ -7,23 +7,22 @@ import javax.swing.*;
 
 public class Client extends Thread implements Runnable{
 
-	protected String ip;
-	protected String port;
-	protected Socket socketClient;
-	public ObjectInputStream receiveObject;
-	public ObjectOutputStream sendObject;
-	protected Shot shot;
-	protected Shot shotAnswer;
-	protected boolean hitAnswer;
-	protected int countShot;
-	protected int countHit;
-	protected int countPoints = 15;
-	protected int[][] clientBoard;
-	protected JTable clientTable;
-	protected JTable clientTableAnswer;
-	protected JTable clientScore;
-	protected JButton clientButton;
-	protected Object[] errorMessage;
+	protected String ip; // guarda ip
+	protected String port;	// guarda porta
+	protected Socket socketClient;	// cria socket cliente
+	public ObjectInputStream receiveObject;	// objeto que recebe objeto
+	public ObjectOutputStream sendObject;	// objeto que envia objeto
+	protected Shot shot;	// objeto tiro
+	protected Shot shotAnswer;	// objeto tiro resposta
+	protected boolean hitAnswer;	// tag se é ou não tiro resposta
+	protected int countShot;	// contador dos tiros enviados
+	protected int countHit;	// contador dos tiros que acertaram
+	protected int countPoints = 15;	// contador dos pontos totais
+	protected JTable clientTable;	// guarda referencia da tabela que contem os barcos do cliente
+	protected JTable clientTableAnswer;	//  guarda referencia da tabela que contem os tiros enviados pelo cliente
+	protected JTable clientScore;	//  guarda referencia da tabela que contem a pontuação do client
+	protected JButton clientButton;	//  guarda referencia do botão iniciar disparo do cliente
+	protected Object[] errorMessage;	// objeto que guarda mensagem de erro
 	
 	// Pelo Método construtor, conecta-se com o servidor e cria-se o socket
 	public Client (String ip, String port){
@@ -182,14 +181,6 @@ public class Client extends Thread implements Runnable{
 
 	public void setPort(String port) {
 		this.port = port;
-	}
-
-	public int[][] getClientBoard() {
-		return clientBoard;
-	}
-
-	public void setClientBoard(int[][] clientBoard) {
-		this.clientBoard = clientBoard;
 	}
 
 	public JTable getClientTable() {
